@@ -468,7 +468,7 @@ namespace Engine
         public void UseWeapon(Weapon weapon)
         {
             // Determine the amount of damage to do to the monster
-            int damageToMonster = RandomNumberGenerator.NumberBetween(weapon.MinimumDamage, weapon.MaximumDamage);
+            int damageToMonster = RandomGenerator.Next(weapon.MinimumDamage, weapon.MaximumDamage);
 
             // Apply the damage to the monster's CurrentHitPoints
             _currentMonster.CurrentHitPoints -= damageToMonster;
@@ -497,7 +497,7 @@ namespace Engine
                 // Add items to the lootedItems list, comparing a random number to the drop percentage
                 foreach (LootItem lootItem in _currentMonster.LootTable)
                 {
-                    if (RandomNumberGenerator.NumberBetween(1, 100) <= lootItem.DropPercentage)
+                    if (RandomGenerator.Next(1, 100) <= lootItem.DropPercentage)
                     {
                         lootedItems.Add(new InventoryItem(lootItem.Details, 1));
                     }
@@ -541,7 +541,7 @@ namespace Engine
                 // Monster is still alive
 
                 // Determine the amount of damage the monster does to the player
-                int damageToPlayer = RandomNumberGenerator.NumberBetween(0, _currentMonster.MaximumDamage);
+                int damageToPlayer = RandomGenerator.Next(0, _currentMonster.MaximumDamage);
 
                 // Display message
                 RaiseMessage("The " + _currentMonster.Name + " did " + damageToPlayer + " points of damage.");
@@ -580,7 +580,7 @@ namespace Engine
             // Monster gets their turn to attack
 
             // Determine the amount of damage the monster does to the player
-            int damageToPlayer = RandomNumberGenerator.NumberBetween(0, _currentMonster.MaximumDamage);
+            int damageToPlayer = RandomGenerator.Next(0, _currentMonster.MaximumDamage);
 
             // Display message
             RaiseMessage("The " + _currentMonster.Name + " did " + damageToPlayer + " points of damage.");

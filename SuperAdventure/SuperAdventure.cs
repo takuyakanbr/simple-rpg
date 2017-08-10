@@ -15,24 +15,16 @@ namespace SuperAdventure
 {
     public partial class SuperAdventure : Form
     {
-        private const string PLAYER_DATA_FILE_NAME = "PlayerData.xml";
-
+        private GameState _state;
         private Player _player;
 
         public SuperAdventure()
         {
             InitializeComponent();
 
-            // Attempt to load saved game
-            if (File.Exists(PLAYER_DATA_FILE_NAME))
-            {
-                _player = Player.CreatePlayerFromXmlString(
-                File.ReadAllText(PLAYER_DATA_FILE_NAME));
-            }
-            else
-            {
-                _player = Player.CreateDefaultPlayer();
-            }
+            _state = new GameState();
+            _state.LoadPlayer();
+            _player = _state.Player;
 
             // Data-bindings for player stats
             lblHitPoints.DataBindings.Add("Text", _player, "CurrentHitPoints");
@@ -156,7 +148,7 @@ namespace SuperAdventure
         
         private void SuperAdventure_FormClosing(object sender, FormClosingEventArgs e)
         {
-            File.WriteAllText(PLAYER_DATA_FILE_NAME, _player.ToXmlString());
+            _state.SavePlayer();
         }
 
         private void cboWeapons_SelectedIndexChanged(object sender, EventArgs e)
