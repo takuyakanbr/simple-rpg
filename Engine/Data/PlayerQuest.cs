@@ -19,6 +19,7 @@ namespace Engine.Data
                 OnPropertyChanged("Data");
             }
         }
+        public int State { get; set; }
         public bool IsComplete
         {
             get { return _complete; }
@@ -28,13 +29,14 @@ namespace Engine.Data
                 OnPropertyChanged("IsComplete");
             }
         }
-        public int State { get; set; }
 
-        public PlayerQuest(Quest data, int state = 0)
+        public string Name { get { return _data.Name; } }
+
+        public PlayerQuest(Quest data, int state = 0, bool isComplete = false)
         {
             Data = data;
-            IsComplete = false;
             State = state;
+            IsComplete = isComplete;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

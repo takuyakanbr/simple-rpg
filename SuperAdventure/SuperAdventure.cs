@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Engine;
+using Engine.Data;
 
 namespace SuperAdventure
 {
@@ -23,7 +24,7 @@ namespace SuperAdventure
             InitializeComponent();
 
             _state = new GameState();
-            _state.LoadPlayer();
+            _state.LoadProfile();
             _player = _state.Player;
 
             // Data-bindings for player stats
@@ -40,7 +41,7 @@ namespace SuperAdventure
             {
                 HeaderText = "Name",
                 Width = 197,
-                DataPropertyName = "Description"
+                DataPropertyName = "Name"
             });
             dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
             {
@@ -61,26 +62,23 @@ namespace SuperAdventure
             dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
             {
                 HeaderText = "Done?",
-                DataPropertyName = "IsCompleted"
+                DataPropertyName = "IsComplete"
             });
 
             // Data-bindings for comboboxes
-            cboWeapons.DataSource = _player.Weapons;
-            cboWeapons.DisplayMember = "Name";
-            cboWeapons.ValueMember = "Id";
-            if (_player.CurrentWeapon != null)
-            {
-                cboWeapons.SelectedItem = _player.CurrentWeapon;
-            }
-            cboWeapons.SelectedIndexChanged += cboWeapons_SelectedIndexChanged;
-            cboPotions.DataSource = _player.Potions;
-            cboPotions.DisplayMember = "Name";
-            cboPotions.ValueMember = "Id";
+            cboConsumable.DataSource = _player.Consumables;
+            cboConsumable.DisplayMember = "Name";
+            cboConsumable.ValueMember = "Id";
+            cboEntities.DataSource = _state.EntitiesOnTile;
+            cboEntities.DisplayMember = "Name";
+            cboEntities.ValueMember = "Id";
 
             _player.PropertyChanged += PlayerOnPropertyChanged;
-            _player.OnMessage += DisplayMessage;
+            _state.PropertyChanged += GameStateOnPropertyChanged;
+            _state.OnMessage += DisplayMessage;
 
-            _player.MoveTo(_player.CurrentLocation);
+            _player.RecalculateStats();
+            _state.MoveTo(_player.CurrentTile);
         }
 
         private void DisplayMessage(object sender, MessageEventArgs messageEventArgs)
@@ -96,107 +94,98 @@ namespace SuperAdventure
             rtbMessages.ScrollToCaret();
         }
 
-        private void PlayerOnPropertyChanged(object sender,
+        private void GameStateOnPropertyChanged(object sender,
             PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            if (propertyChangedEventArgs.PropertyName == "Weapons")
+            if (propertyChangedEventArgs.PropertyName == "CurrentMonster")
             {
-                cboWeapons.DataSource = _player.Weapons;
-                if (!_player.Weapons.Any())
+                btnAttack.Visible = _state.CurrentMonster != null;
+                if (_state.CurrentMonster == null)
                 {
-                    cboWeapons.Visible = false;
-                    btnUseWeapon.Visible = false;
-                }
-            }
-            if (propertyChangedEventArgs.PropertyName == "Potions")
-            {
-                cboPotions.DataSource = _player.Potions;
-                if (!_player.Potions.Any())
-                {
-                    cboPotions.Visible = false;
-                    btnUsePotion.Visible = false;
-                }
-            }
-            if (propertyChangedEventArgs.PropertyName == "CurrentLocation")
-            {
-                // Show/hide available movement buttons
-                btnNorth.Visible = (_player.CurrentLocation.LocationToNorth != null);
-                btnEast.Visible = (_player.CurrentLocation.LocationToEast != null);
-                btnSouth.Visible = (_player.CurrentLocation.LocationToSouth != null);
-                btnWest.Visible = (_player.CurrentLocation.LocationToWest != null);
-                btnTrade.Visible = (_player.CurrentLocation.VendorWorkingHere != null);
-
-                // Display current location name and description
-                rtbLocation.Text = _player.CurrentLocation.Name + Environment.NewLine;
-                rtbLocation.Text += _player.CurrentLocation.Description + Environment.NewLine;
-                if (_player.CurrentLocation.MonsterLivingHere == null)
-                {
-                    cboWeapons.Visible = false;
-                    cboPotions.Visible = false;
-                    btnUseWeapon.Visible = false;
-                    btnUsePotion.Visible = false;
+                    cboConsumable.Visible = false;
+                    btnUseConsumable.Visible = false;
                 }
                 else
                 {
-                    cboWeapons.Visible = _player.Weapons.Any();
-                    cboPotions.Visible = _player.Potions.Any();
-                    btnUseWeapon.Visible = _player.Weapons.Any();
-                    btnUsePotion.Visible = _player.Potions.Any();
+                    cboConsumable.Visible = _player.Consumables.Any();
+                    btnUseConsumable.Visible = _player.Consumables.Any();
                 }
+            }
+        }
+
+        private void PlayerOnPropertyChanged(object sender,
+            PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (propertyChangedEventArgs.PropertyName == "Consumables")
+            {
+                cboConsumable.DataSource = _player.Consumables;
+                if (!_player.Consumables.Any())
+                {
+                    cboConsumable.Visible = false;
+                    btnUseConsumable.Visible = false;
+                }
+            }
+            else if (propertyChangedEventArgs.PropertyName == "CurrentTile")
+            {
+                // Show/hide available movement buttons
+                btnNorth.Visible = (_player.CurrentTile.North != null);
+                btnEast.Visible = (_player.CurrentTile.East != null);
+                btnSouth.Visible = (_player.CurrentTile.South != null);
+                btnWest.Visible = (_player.CurrentTile.West != null);
+
+                bool hasEntities = _state.EntitiesOnTile.Count() > 0;
+                cboEntities.Visible = hasEntities;
+                btnInteract.Visible = hasEntities;
+
+                // Display current location name and description
+                rtbLocation.Text = _player.CurrentTile.Name + Environment.NewLine + Environment.NewLine;
+                rtbLocation.Text += _player.CurrentTile.Description + Environment.NewLine;
             }
         }
         
         private void SuperAdventure_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _state.SavePlayer();
+            _state.SaveProfile();
         }
-
-        private void cboWeapons_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            _player.CurrentWeapon = (Weapon)cboWeapons.SelectedItem;
-        }
-
+        
         private void btnNorth_Click(object sender, EventArgs e)
         {
-            _player.MoveNorth();
+            _state.MoveNorth();
         }
 
         private void btnEast_Click(object sender, EventArgs e)
         {
-            _player.MoveEast();
+            _state.MoveEast();
         }
 
         private void btnSouth_Click(object sender, EventArgs e)
         {
-            _player.MoveSouth();
+            _state.MoveSouth();
         }
 
         private void btnWest_Click(object sender, EventArgs e)
         {
-            _player.MoveWest();
+            _state.MoveWest();
         }
 
-        private void btnUseWeapon_Click(object sender, EventArgs e)
+        private void btnEquipment_Click(object sender, EventArgs e)
         {
-            // Get the currently selected weapon from the cboWeapons ComboBox
-            Weapon currentWeapon = (Weapon)cboWeapons.SelectedItem;
-
-            _player.UseWeapon(currentWeapon);
+            _state.OpenEquipment();
         }
 
-        private void btnUsePotion_Click(object sender, EventArgs e)
+        private void btnAttack_Click(object sender, EventArgs e)
         {
-            // Get the currently selected potion from the combobox
-            HealingPotion potion = (HealingPotion)cboPotions.SelectedItem;
-
-            _player.UsePotion(potion);
+            _state.Attack();
         }
 
-        private void btnTrade_Click(object sender, EventArgs e)
+        private void btnUseConsumable_Click(object sender, EventArgs e)
         {
-            TradingScreen tradingScreen = new TradingScreen(_player);
-            tradingScreen.StartPosition = FormStartPosition.CenterParent;
-            tradingScreen.ShowDialog(this);
+            _state.UseConsumable((ItemConsumable)cboConsumable.SelectedItem);
+        }
+
+        private void btnInteract_Click(object sender, EventArgs e)
+        {
+            _state.Interact((Entity)cboEntities.SelectedItem);
         }
     }
 }

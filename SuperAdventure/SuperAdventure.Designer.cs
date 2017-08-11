@@ -37,10 +37,10 @@
             this.lblExperience = new System.Windows.Forms.Label();
             this.lblLevel = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.cboWeapons = new System.Windows.Forms.ComboBox();
-            this.cboPotions = new System.Windows.Forms.ComboBox();
-            this.btnUseWeapon = new System.Windows.Forms.Button();
-            this.btnUsePotion = new System.Windows.Forms.Button();
+            this.cboEntities = new System.Windows.Forms.ComboBox();
+            this.cboConsumable = new System.Windows.Forms.ComboBox();
+            this.btnInteract = new System.Windows.Forms.Button();
+            this.btnUseConsumable = new System.Windows.Forms.Button();
             this.btnNorth = new System.Windows.Forms.Button();
             this.btnEast = new System.Windows.Forms.Button();
             this.btnSouth = new System.Windows.Forms.Button();
@@ -49,7 +49,8 @@
             this.rtbMessages = new System.Windows.Forms.RichTextBox();
             this.dgvInventory = new System.Windows.Forms.DataGridView();
             this.dgvQuests = new System.Windows.Forms.DataGridView();
-            this.btnTrade = new System.Windows.Forms.Button();
+            this.btnAttack = new System.Windows.Forms.Button();
+            this.btnEquipment = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvInventory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQuests)).BeginInit();
             this.SuspendLayout();
@@ -125,53 +126,53 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(617, 531);
+            this.label5.Location = new System.Drawing.Point(624, 506);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(69, 13);
             this.label5.TabIndex = 8;
             this.label5.Text = "Select action";
             // 
-            // cboWeapons
+            // cboEntities
             // 
-            this.cboWeapons.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboWeapons.FormattingEnabled = true;
-            this.cboWeapons.Location = new System.Drawing.Point(369, 559);
-            this.cboWeapons.Name = "cboWeapons";
-            this.cboWeapons.Size = new System.Drawing.Size(199, 21);
-            this.cboWeapons.TabIndex = 9;
+            this.cboEntities.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboEntities.FormattingEnabled = true;
+            this.cboEntities.Location = new System.Drawing.Point(369, 602);
+            this.cboEntities.Name = "cboEntities";
+            this.cboEntities.Size = new System.Drawing.Size(220, 21);
+            this.cboEntities.TabIndex = 9;
             // 
-            // cboPotions
+            // cboConsumable
             // 
-            this.cboPotions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboPotions.FormattingEnabled = true;
-            this.cboPotions.Location = new System.Drawing.Point(369, 593);
-            this.cboPotions.Name = "cboPotions";
-            this.cboPotions.Size = new System.Drawing.Size(199, 21);
-            this.cboPotions.TabIndex = 10;
+            this.cboConsumable.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboConsumable.FormattingEnabled = true;
+            this.cboConsumable.Location = new System.Drawing.Point(369, 566);
+            this.cboConsumable.Name = "cboConsumable";
+            this.cboConsumable.Size = new System.Drawing.Size(220, 21);
+            this.cboConsumable.TabIndex = 10;
             // 
-            // btnUseWeapon
+            // btnInteract
             // 
-            this.btnUseWeapon.Location = new System.Drawing.Point(620, 559);
-            this.btnUseWeapon.Name = "btnUseWeapon";
-            this.btnUseWeapon.Size = new System.Drawing.Size(75, 23);
-            this.btnUseWeapon.TabIndex = 11;
-            this.btnUseWeapon.Text = "Use";
-            this.btnUseWeapon.UseVisualStyleBackColor = true;
-            this.btnUseWeapon.Click += new System.EventHandler(this.btnUseWeapon_Click);
+            this.btnInteract.Location = new System.Drawing.Point(620, 602);
+            this.btnInteract.Name = "btnInteract";
+            this.btnInteract.Size = new System.Drawing.Size(75, 23);
+            this.btnInteract.TabIndex = 11;
+            this.btnInteract.Text = "Interact";
+            this.btnInteract.UseVisualStyleBackColor = true;
+            this.btnInteract.Click += new System.EventHandler(this.btnInteract_Click);
             // 
-            // btnUsePotion
+            // btnUseConsumable
             // 
-            this.btnUsePotion.Location = new System.Drawing.Point(620, 593);
-            this.btnUsePotion.Name = "btnUsePotion";
-            this.btnUsePotion.Size = new System.Drawing.Size(75, 23);
-            this.btnUsePotion.TabIndex = 12;
-            this.btnUsePotion.Text = "Use";
-            this.btnUsePotion.UseVisualStyleBackColor = true;
-            this.btnUsePotion.Click += new System.EventHandler(this.btnUsePotion_Click);
+            this.btnUseConsumable.Location = new System.Drawing.Point(620, 566);
+            this.btnUseConsumable.Name = "btnUseConsumable";
+            this.btnUseConsumable.Size = new System.Drawing.Size(75, 23);
+            this.btnUseConsumable.TabIndex = 12;
+            this.btnUseConsumable.Text = "Use";
+            this.btnUseConsumable.UseVisualStyleBackColor = true;
+            this.btnUseConsumable.Click += new System.EventHandler(this.btnUseConsumable_Click);
             // 
             // btnNorth
             // 
-            this.btnNorth.Location = new System.Drawing.Point(493, 433);
+            this.btnNorth.Location = new System.Drawing.Point(493, 427);
             this.btnNorth.Name = "btnNorth";
             this.btnNorth.Size = new System.Drawing.Size(75, 23);
             this.btnNorth.TabIndex = 13;
@@ -181,7 +182,7 @@
             // 
             // btnEast
             // 
-            this.btnEast.Location = new System.Drawing.Point(573, 457);
+            this.btnEast.Location = new System.Drawing.Point(573, 452);
             this.btnEast.Name = "btnEast";
             this.btnEast.Size = new System.Drawing.Size(75, 23);
             this.btnEast.TabIndex = 14;
@@ -191,7 +192,7 @@
             // 
             // btnSouth
             // 
-            this.btnSouth.Location = new System.Drawing.Point(493, 487);
+            this.btnSouth.Location = new System.Drawing.Point(493, 477);
             this.btnSouth.Name = "btnSouth";
             this.btnSouth.Size = new System.Drawing.Size(75, 23);
             this.btnSouth.TabIndex = 15;
@@ -201,7 +202,7 @@
             // 
             // btnWest
             // 
-            this.btnWest.Location = new System.Drawing.Point(412, 457);
+            this.btnWest.Location = new System.Drawing.Point(412, 452);
             this.btnWest.Name = "btnWest";
             this.btnWest.Size = new System.Drawing.Size(75, 23);
             this.btnWest.TabIndex = 16;
@@ -257,22 +258,33 @@
             this.dgvQuests.Size = new System.Drawing.Size(312, 189);
             this.dgvQuests.TabIndex = 20;
             // 
-            // btnTrade
+            // btnAttack
             // 
-            this.btnTrade.Location = new System.Drawing.Point(493, 620);
-            this.btnTrade.Name = "btnTrade";
-            this.btnTrade.Size = new System.Drawing.Size(75, 23);
-            this.btnTrade.TabIndex = 21;
-            this.btnTrade.Text = "Trade";
-            this.btnTrade.UseVisualStyleBackColor = true;
-            this.btnTrade.Click += new System.EventHandler(this.btnTrade_Click);
+            this.btnAttack.Location = new System.Drawing.Point(620, 531);
+            this.btnAttack.Name = "btnAttack";
+            this.btnAttack.Size = new System.Drawing.Size(75, 23);
+            this.btnAttack.TabIndex = 21;
+            this.btnAttack.Text = "Attack";
+            this.btnAttack.UseVisualStyleBackColor = true;
+            this.btnAttack.Click += new System.EventHandler(this.btnAttack_Click);
+            // 
+            // btnEquipment
+            // 
+            this.btnEquipment.Location = new System.Drawing.Point(514, 531);
+            this.btnEquipment.Name = "btnEquipment";
+            this.btnEquipment.Size = new System.Drawing.Size(75, 23);
+            this.btnEquipment.TabIndex = 22;
+            this.btnEquipment.Text = "Equipment";
+            this.btnEquipment.UseVisualStyleBackColor = true;
+            this.btnEquipment.Click += new System.EventHandler(this.btnEquipment_Click);
             // 
             // SuperAdventure
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(719, 651);
-            this.Controls.Add(this.btnTrade);
+            this.Controls.Add(this.btnEquipment);
+            this.Controls.Add(this.btnAttack);
             this.Controls.Add(this.dgvQuests);
             this.Controls.Add(this.dgvInventory);
             this.Controls.Add(this.rtbMessages);
@@ -281,10 +293,10 @@
             this.Controls.Add(this.btnSouth);
             this.Controls.Add(this.btnEast);
             this.Controls.Add(this.btnNorth);
-            this.Controls.Add(this.btnUsePotion);
-            this.Controls.Add(this.btnUseWeapon);
-            this.Controls.Add(this.cboPotions);
-            this.Controls.Add(this.cboWeapons);
+            this.Controls.Add(this.btnUseConsumable);
+            this.Controls.Add(this.btnInteract);
+            this.Controls.Add(this.cboConsumable);
+            this.Controls.Add(this.cboEntities);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.lblLevel);
             this.Controls.Add(this.lblExperience);
@@ -315,10 +327,10 @@
         private System.Windows.Forms.Label lblExperience;
         private System.Windows.Forms.Label lblLevel;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.ComboBox cboWeapons;
-        private System.Windows.Forms.ComboBox cboPotions;
-        private System.Windows.Forms.Button btnUseWeapon;
-        private System.Windows.Forms.Button btnUsePotion;
+        private System.Windows.Forms.ComboBox cboEntities;
+        private System.Windows.Forms.ComboBox cboConsumable;
+        private System.Windows.Forms.Button btnInteract;
+        private System.Windows.Forms.Button btnUseConsumable;
         private System.Windows.Forms.Button btnNorth;
         private System.Windows.Forms.Button btnEast;
         private System.Windows.Forms.Button btnSouth;
@@ -327,7 +339,8 @@
         private System.Windows.Forms.RichTextBox rtbMessages;
         private System.Windows.Forms.DataGridView dgvInventory;
         private System.Windows.Forms.DataGridView dgvQuests;
-        private System.Windows.Forms.Button btnTrade;
+        private System.Windows.Forms.Button btnAttack;
+        private System.Windows.Forms.Button btnEquipment;
     }
 }
 
