@@ -85,8 +85,8 @@ namespace Engine
         private Player(int currentHitPoints, int maximumHitPoints,
             int gold, int experiencePoints, int level)
         {
-            CurrentHitPoints = currentHitPoints;
             MaximumHitPoints = maximumHitPoints;
+            CurrentHitPoints = currentHitPoints;
             Gold = gold;
             ExperiencePoints = experiencePoints;
             Level = level;
@@ -315,6 +315,7 @@ namespace Engine
         {
             Player player = new Player(100, 100, 20, 0, 1);
             player.CurrentTile = World.GetTile(player.HomeTileID);
+            player.AddItemToInventory(World.GetItem(2));
 
             return player;
         }

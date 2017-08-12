@@ -35,5 +35,17 @@ namespace Engine.Data
             MaxGold = maxGold;
             LootTable = new List<LootItem>();
         }
+
+        public Monster AddLoot(Item item, int minQuantity, int maxQuantity, double dropChance)
+        {
+            LootTable.Add(new LootItem(item, minQuantity, maxQuantity, dropChance));
+            return this;
+        }
+
+        public Monster AddLoot(LootItem lootItem)
+        {
+            LootTable.Add(lootItem);
+            return this;
+        }
     }
 }

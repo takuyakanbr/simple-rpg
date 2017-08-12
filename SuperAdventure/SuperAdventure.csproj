@@ -45,6 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DialogScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogScreen.Designer.cs">
+      <DependentUpon>DialogScreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="SuperAdventure.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -59,6 +65,9 @@
     <Compile Include="TradingScreen.Designer.cs">
       <DependentUpon>TradingScreen.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="DialogScreen.resx">
+      <DependentUpon>DialogScreen.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

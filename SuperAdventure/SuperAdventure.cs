@@ -19,6 +19,8 @@ namespace SuperAdventure
         private GameState _state;
         private Player _player;
 
+        public DialogScreen DialogScreen;
+
         public SuperAdventure()
         {
             InitializeComponent();
@@ -68,14 +70,15 @@ namespace SuperAdventure
             // Data-bindings for comboboxes
             cboConsumable.DataSource = _player.Consumables;
             cboConsumable.DisplayMember = "Name";
-            cboConsumable.ValueMember = "Id";
+            cboConsumable.ValueMember = "ID";
             cboEntities.DataSource = _state.EntitiesOnTile;
             cboEntities.DisplayMember = "Name";
-            cboEntities.ValueMember = "Id";
+            cboEntities.ValueMember = "ID";
 
             _player.PropertyChanged += PlayerOnPropertyChanged;
             _state.PropertyChanged += GameStateOnPropertyChanged;
             _state.OnMessage += DisplayMessage;
+            _state.OnDialogEvent += UpdateDialog;
 
             _player.RecalculateStats();
             _state.MoveTo(_player.CurrentTile);
@@ -92,6 +95,28 @@ namespace SuperAdventure
 
             rtbMessages.SelectionStart = rtbMessages.Text.Length;
             rtbMessages.ScrollToCaret();
+        }
+
+        private void UpdateDialog(object sender, DialogEventArgs eventArgs)
+        {
+            switch (eventArgs.Type)
+            {
+                case DialogEventType.Update:
+                    if (DialogScreen == null)
+                    {
+                        DialogScreen = new DialogScreen(this, _state);
+                        DialogScreen.StartPosition = FormStartPosition.CenterParent;
+
+                        // show dialog in a non-blocking way
+                        BeginInvoke(new Action(() => DialogScreen.ShowDialog(this)));
+                    }
+                    DialogScreen.UpdateDialog(eventArgs.Dialog, eventArgs.Options);
+                    break;
+                case DialogEventType.Close:
+                    DialogScreen.Close();
+                    DialogScreen = null;
+                    break;
+            }
         }
 
         private void GameStateOnPropertyChanged(object sender,
@@ -127,12 +152,13 @@ namespace SuperAdventure
             }
             else if (propertyChangedEventArgs.PropertyName == "CurrentTile")
             {
-                // Show/hide available movement buttons
+                // Show/hide movement buttons
                 btnNorth.Visible = (_player.CurrentTile.North != null);
                 btnEast.Visible = (_player.CurrentTile.East != null);
                 btnSouth.Visible = (_player.CurrentTile.South != null);
                 btnWest.Visible = (_player.CurrentTile.West != null);
-
+                
+                // Show/hide interaction combobox + button
                 bool hasEntities = _state.EntitiesOnTile.Count() > 0;
                 cboEntities.Visible = hasEntities;
                 btnInteract.Visible = hasEntities;
@@ -185,7 +211,7 @@ namespace SuperAdventure
 
         private void btnInteract_Click(object sender, EventArgs e)
         {
-            _state.Interact((Entity)cboEntities.SelectedItem);
+            _state.BeginInteraction((Entity)cboEntities.SelectedItem);
         }
     }
 }

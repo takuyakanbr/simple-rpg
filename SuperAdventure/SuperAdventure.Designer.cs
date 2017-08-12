@@ -51,6 +51,7 @@
             this.dgvQuests = new System.Windows.Forms.DataGridView();
             this.btnAttack = new System.Windows.Forms.Button();
             this.btnEquipment = new System.Windows.Forms.Button();
+            this.rtbDescription = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvInventory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQuests)).BeginInit();
             this.SuspendLayout();
@@ -240,7 +241,7 @@
             this.dgvInventory.Name = "dgvInventory";
             this.dgvInventory.ReadOnly = true;
             this.dgvInventory.RowHeadersVisible = false;
-            this.dgvInventory.Size = new System.Drawing.Size(312, 309);
+            this.dgvInventory.Size = new System.Drawing.Size(312, 305);
             this.dgvInventory.TabIndex = 19;
             // 
             // dgvQuests
@@ -250,12 +251,12 @@
             this.dgvQuests.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvQuests.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dgvQuests.Enabled = false;
-            this.dgvQuests.Location = new System.Drawing.Point(16, 446);
+            this.dgvQuests.Location = new System.Drawing.Point(16, 441);
             this.dgvQuests.MultiSelect = false;
             this.dgvQuests.Name = "dgvQuests";
             this.dgvQuests.ReadOnly = true;
             this.dgvQuests.RowHeadersVisible = false;
-            this.dgvQuests.Size = new System.Drawing.Size(312, 189);
+            this.dgvQuests.Size = new System.Drawing.Size(312, 113);
             this.dgvQuests.TabIndex = 20;
             // 
             // btnAttack
@@ -278,11 +279,21 @@
             this.btnEquipment.UseVisualStyleBackColor = true;
             this.btnEquipment.Click += new System.EventHandler(this.btnEquipment_Click);
             // 
+            // rtbDescription
+            // 
+            this.rtbDescription.Location = new System.Drawing.Point(16, 560);
+            this.rtbDescription.Name = "rtbDescription";
+            this.rtbDescription.ReadOnly = true;
+            this.rtbDescription.Size = new System.Drawing.Size(312, 79);
+            this.rtbDescription.TabIndex = 23;
+            this.rtbDescription.Text = "";
+            // 
             // SuperAdventure
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(719, 651);
+            this.Controls.Add(this.rtbDescription);
             this.Controls.Add(this.btnEquipment);
             this.Controls.Add(this.btnAttack);
             this.Controls.Add(this.dgvQuests);
@@ -341,6 +352,7 @@
         private System.Windows.Forms.DataGridView dgvQuests;
         private System.Windows.Forms.Button btnAttack;
         private System.Windows.Forms.Button btnEquipment;
+        private System.Windows.Forms.RichTextBox rtbDescription;
     }
 }
 

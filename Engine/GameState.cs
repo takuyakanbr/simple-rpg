@@ -11,8 +11,7 @@ namespace Engine
     public class GameState : INotifyPropertyChanged
     {
         private const string SAVE_DATA_FILE_NAME = "SaveData.xml";
-
-        private Player _player;
+        
         private Monster _currentMonster;
         private int _monsterHitPoints;
 
@@ -31,16 +30,20 @@ namespace Engine
         public Vendor CurrentVendor { get; private set; }
 
         public Entity CurrentEntity { get; private set; }
+
         public int InteractState = 0;
+        public int InteractCounter = 0;
         public int InteractChoice = 0;
 
         public event EventHandler<MessageEventArgs> OnMessage;
+        public event EventHandler<DialogEventArgs> OnDialogEvent;
 
         public GameState()
         {
             EntitiesOnTile = new BindingList<Entity>();
         }
 
+        // attempt to attack the current monster
         public void Attack()
         {
             if (CurrentMonster == null) return;
@@ -64,8 +67,11 @@ namespace Engine
 
                 // Give player gold for killing the monster
                 var gold = RandomGenerator.Next(CurrentMonster.MinGold, CurrentMonster.MaxGold);
-                Player.Gold += gold;
-                RaiseMessage("You receive " + gold + " gold");
+                if (gold > 0)
+                {
+                    Player.Gold += gold;
+                    RaiseMessage("You receive " + gold + " gold");
+                }
 
                 // Get random loot from the monster
                 foreach (var lootItem in CurrentMonster.LootTable)
@@ -78,6 +84,9 @@ namespace Engine
                     }
                 }
 
+                CurrentMonster.OnKill?.Invoke(this, Player);
+                CurrentMonster = null;
+
                 RaiseMessage("");
             }
             else
@@ -87,7 +96,17 @@ namespace Engine
             }
         }
 
-        public void DoMonsterMove()
+        // starts a new interaction with the given entity
+        public void BeginInteraction(Entity entity)
+        {
+            CurrentEntity = entity;
+            InteractState = 0;
+            InteractCounter = 0;
+            Interact(0);
+        }
+
+        // (internal) make the monster take a turn
+        private void DoMonsterMove()
         {
             if (CurrentMonster == null) return;
 
@@ -96,18 +115,29 @@ namespace Engine
             if (damage < 0) damage = 0;
 
             Player.CurrentHitPoints -= damage;
-            RaiseMessage("The " + _currentMonster.Name + " did " + damage + " points of damage.");
+            RaiseMessage("The " + CurrentMonster.Name + " did " + damage + " points of damage.");
 
             if (Player.CurrentHitPoints <= 0)
             {
-                RaiseMessage("The " + _currentMonster.Name + " killed you.");
+                RaiseMessage("The " + CurrentMonster.Name + " killed you.");
                 MoveHome();
             }
         }
 
-        public void Interact(Entity entity)
+        // closes the dialog screen and end interaction
+        public void EndDialog()
         {
+            OnDialogEvent?.Invoke(this, new DialogEventArgs(DialogEventType.Close, null, null));
+            CurrentEntity = null;
+        }
 
+        // continue dialog with the current entity
+        public void Interact(int option)
+        {
+            if (CurrentEntity == null) return;
+            InteractChoice = option;
+            CurrentEntity.OnInteract(this, Player);
+            InteractCounter++;
         }
 
         public void LoadProfile()
@@ -122,19 +152,11 @@ namespace Engine
                 Player = Player.CreateDefaultPlayer();
             }
         }
-
+        
         public void MoveTo(Tile tile)
         {
-            if (tile.OnEnter != null && !tile.OnEnter(this, Player))
-            {
-                // Cannot enter this tile
-                return;
-            }
-
             CurrentVendor = null;
             CurrentEntity = null;
-            InteractState = 0;
-            InteractChoice = 0;
 
             // Update entities
             EntitiesOnTile.Clear();
@@ -145,15 +167,19 @@ namespace Engine
             }
 
             // Create a new monster encounter
-            if (tile.Monsters.Count() > 0)
+            bool newMonster = false;
+            foreach (var monsterSpawn in tile.MonsterSpawns)
             {
-                CurrentMonster = tile.Monsters.ElementAt(RandomGenerator.Next(0, tile.Monsters.Count() - 1));
-                _monsterHitPoints = CurrentMonster.HitPoints;
+                if (RandomGenerator.NextDouble() <= monsterSpawn.SpawnChance)
+                {
+                    CurrentMonster = monsterSpawn.Data;
+                    _monsterHitPoints = CurrentMonster.HitPoints;
+                    RaiseMessage("You see a " + CurrentMonster.Name);
+                    newMonster = true;
+                    break;
+                }
             }
-            else
-            {
-                CurrentMonster = null;
-            }
+            if (!newMonster) CurrentMonster = null;
 
             Player.CurrentHitPoints += 1;
             Player.CurrentTile = tile;
@@ -164,43 +190,46 @@ namespace Engine
             MoveTo(World.GetTile(Player.HomeTileID));
         }
 
+        private void MoveDirection(Tile tile, string direction)
+        {
+            if (tile == null) return;
+            if (tile.OnEnter != null && !tile.OnEnter(this, Player))
+            {
+                // Cannot enter this tile
+                return;
+            }
+
+            RaiseMessage("You walk " + direction);
+            MoveTo(tile);
+        }
+
         public void MoveNorth()
         {
-            if (CurrentTile.North != null)
-            {
-                MoveTo(CurrentTile.North);
-            }
+            MoveDirection(CurrentTile.North, "north");
         }
 
         public void MoveEast()
         {
-            if (CurrentTile.East != null)
-            {
-                MoveTo(CurrentTile.East);
-            }
+            MoveDirection(CurrentTile.East, "east");
         }
 
         public void MoveSouth()
         {
-            if (CurrentTile.South != null)
-            {
-                MoveTo(CurrentTile.South);
-            }
+            MoveDirection(CurrentTile.South, "south");
         }
 
         public void MoveWest()
         {
-            if (CurrentTile.West != null)
-            {
-                MoveTo(CurrentTile.West);
-            }
+            MoveDirection(CurrentTile.West, "west");
         }
         
+        // open equipment screen
         public void OpenEquipment()
         {
 
         }
 
+        // append a message to the message textbox
         public void RaiseMessage(string message, bool addExtraNewLine = false)
         {
             OnMessage?.Invoke(this, new MessageEventArgs(message, addExtraNewLine));
@@ -208,9 +237,17 @@ namespace Engine
 
         public void SaveProfile()
         {
-            File.WriteAllText(SAVE_DATA_FILE_NAME, _player.ToXmlString());
+            File.WriteAllText(SAVE_DATA_FILE_NAME, Player.ToXmlString());
         }
 
+        // show/update the dialog screen
+        public void ShowDialog(string text, string[] options)
+        {
+            OnDialogEvent?.Invoke(this, 
+                new DialogEventArgs(DialogEventType.Update, CurrentEntity.Name + ": " + text, options));
+        }
+
+        // consume the specified consumable - this lets the monster take a turn
         public void UseConsumable(ItemConsumable consumable)
         {
             Player.CurrentHitPoints += consumable.HitPoints;

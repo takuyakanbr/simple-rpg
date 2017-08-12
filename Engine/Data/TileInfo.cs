@@ -12,7 +12,7 @@ namespace Engine.Data
         public string GeoName;
         public string Description;
         public List<Entity> Entities;
-        public List<Monster> Monsters;
+        public List<MonsterSpawn> MonsterSpawns;
 
         // run when player attempts to enter this tile;
         // player will not be allowed into this tile if this returns false
@@ -25,7 +25,19 @@ namespace Engine.Data
             GeoName = geoName;
             Description = description;
             Entities = new List<Entity>();
-            Monsters = new List<Monster>();
+            MonsterSpawns = new List<MonsterSpawn>();
+        }
+
+        public TileInfo AddEntity(Entity entity)
+        {
+            Entities.Add(entity);
+            return this;
+        }
+
+        public TileInfo AddMonsterSpawn(Monster data, double spawnChance, bool canAvoid = true, bool initiative = false)
+        {
+            MonsterSpawns.Add(new MonsterSpawn(data, spawnChance, canAvoid, initiative));
+            return this;
         }
     }
 }

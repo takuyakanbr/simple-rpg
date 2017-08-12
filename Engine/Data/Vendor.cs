@@ -16,6 +16,13 @@ namespace Engine.Data
             ID = id;
             Name = name;
         }
+        
+        // add item without checking for merges
+        public Vendor AddItem(Item item, int quantity = 1)
+        {
+            Inventory.Add(new InventoryItem(item, quantity));
+            return this;
+        }
 
         public void AddItemToInventory(Item itemToAdd, int quantity = 1)
         {
