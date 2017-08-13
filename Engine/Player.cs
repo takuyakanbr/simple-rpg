@@ -72,6 +72,15 @@ namespace Engine
         public int MinDamage { get; private set; }
         public int MaxDamage { get; private set; }
         public int Defence { get; private set; }
+        public List<ItemEquipment> Equippable
+        {
+            get
+            {
+                return Inventory.Where(
+                    x => x.Data is ItemEquipment).Select(
+                    x => x.Data as ItemEquipment).ToList();
+            }
+        }
         public List<ItemConsumable> Consumables
         {
             get
@@ -110,21 +119,58 @@ namespace Engine
             }
         }
         
-        public void AddItemToInventory(Item itemToAdd, int quantity = 1)
+        public void AddItemToInventory(Item item, int quantity = 1)
         {
-            InventoryItem item = Inventory.SingleOrDefault(
-                ii => ii.Data.ID == itemToAdd.ID);
+            InventoryItem invItem = Inventory.SingleOrDefault(ii => ii.ID == item.ID);
 
-            if (item == null)
+            if (invItem == null)
             {
-                Inventory.Add(new InventoryItem(itemToAdd, quantity));
+                Inventory.Add(new InventoryItem(item, quantity));
             }
             else
             {
-                item.Quantity += quantity;
+                invItem.Quantity += quantity;
             }
 
-            RaiseInventoryChangedEvent(itemToAdd);
+            RaiseInventoryChangedEvent(item);
+        }
+
+        public void AddItemToInventory(int itemID, int quantity = 1)
+        {
+            InventoryItem invItem = Inventory.SingleOrDefault(ii => ii.ID == itemID);
+
+            if (invItem == null)
+            {
+                invItem = new InventoryItem(World.GetItem(itemID), quantity);
+                Inventory.Add(invItem);
+            }
+            else
+            {
+                invItem.Quantity += quantity;
+            }
+
+            RaiseInventoryChangedEvent(invItem.Data);
+        }
+        
+        // equips the specified item, returns true if successful
+        public bool EquipItem(int itemID)
+        {
+            InventoryItem item = Inventory.SingleOrDefault(ii => ii.ID == itemID);
+            if (item != null && item.Data is ItemEquipment)
+            {
+                ItemEquipment itemEquipment = (ItemEquipment)item.Data;
+                RemoveItemFromInventory(itemID);
+
+                // remove equipped item occupying the same slot
+                ItemEquipment itemInSlot = Equipment.SingleOrDefault(ie => ie.Type == itemEquipment.Type);
+                if (itemInSlot != null)
+                    UnequipItem(itemInSlot.ID);
+
+                Equipment.Add(itemEquipment);
+                RecalculateStats();
+                return true;
+            }
+            return false;
         }
 
         public int GetQuestState(Quest quest)
@@ -178,20 +224,19 @@ namespace Engine
             Defence = defence;
         }
 
-        public void RemoveItemFromInventory(Item itemToRemove, int quantity = 1)
+        public void RemoveItemFromInventory(int itemID, int quantity = 1)
         {
-            InventoryItem item = Inventory.SingleOrDefault(
-                ii => ii.Data.ID == itemToRemove.ID);
-            if (item != null)
+            InventoryItem invItem = Inventory.SingleOrDefault(ii => ii.ID == itemID);
+            if (invItem != null)
             {
-                item.Quantity -= quantity;
+                invItem.Quantity -= quantity;
 
-                if (item.Quantity <= 0)
+                if (invItem.Quantity <= 0)
                 {
-                    Inventory.Remove(item);
+                    Inventory.Remove(invItem);
                 }
 
-                RaiseInventoryChangedEvent(itemToRemove);
+                RaiseInventoryChangedEvent(invItem.Data);
             }
         }
 
@@ -299,6 +344,20 @@ namespace Engine
             return saveData.InnerXml;
         }
 
+        // unequips the specified item, returns true if successful
+        public bool UnequipItem(int itemID)
+        {
+            ItemEquipment item = Equipment.SingleOrDefault(ie => ie.ID == itemID);
+            if (item != null)
+            {
+                Equipment.Remove(item);
+                AddItemToInventory(itemID);
+                RecalculateStats();
+                return true;
+            }
+            return false;
+        }
+
         public void UpdateQuest(Quest quest, int state, bool isComplete = false)
         {
             PlayerQuest playerQuest = Quests.SingleOrDefault(
@@ -315,7 +374,10 @@ namespace Engine
         {
             Player player = new Player(100, 100, 20, 0, 1);
             player.CurrentTile = World.GetTile(player.HomeTileID);
-            player.AddItemToInventory(World.GetItem(2));
+            player.AddItemToInventory(2);
+            player.AddItemToInventory(3);
+            player.AddItemToInventory(4);
+            player.AddItemToInventory(5);
 
             return player;
         }
@@ -346,7 +408,7 @@ namespace Engine
                     int quantity = Convert.ToInt32(node.Attributes["Quantity"].Value);
 
                     if (quantity > 0)
-                        player.AddItemToInventory(World.GetItem(id), quantity);
+                        player.AddItemToInventory(id, quantity);
                 }
 
                 foreach (XmlNode node in saveData.SelectNodes("/Player/PlayerQuests/PlayerQuest"))

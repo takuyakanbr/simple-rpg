@@ -18,37 +18,37 @@ namespace Engine.Data
         }
         
         // add item without checking for merges
-        public Vendor AddItem(Item item, int quantity = 1)
+        public Vendor AddItem(int itemID, int quantity = 1)
         {
-            Inventory.Add(new InventoryItem(item, quantity));
+            Inventory.Add(new InventoryItem(World.GetItem(itemID), quantity));
             return this;
         }
 
         public void AddItemToInventory(Item itemToAdd, int quantity = 1)
         {
-            InventoryItem item = Inventory.SingleOrDefault(ii => ii.Data.ID == itemToAdd.ID);
-            if (item == null)
+            InventoryItem invItem = Inventory.SingleOrDefault(ii => ii.Data.ID == itemToAdd.ID);
+            if (invItem == null)
             {
                 Inventory.Add(new InventoryItem(itemToAdd, quantity));
             }
             else
             {
-                item.Quantity += quantity;
+                invItem.Quantity += quantity;
             }
             OnPropertyChanged("Inventory");
         }
 
-        public void RemoveItemFromInventory(Item itemToRemove, int quantity = 1)
+        public void RemoveItemFromInventory(int itemID, int quantity = 1)
         {
-            InventoryItem item = Inventory.SingleOrDefault(ii => ii.Data.ID == itemToRemove.ID);
+            InventoryItem invItem = Inventory.SingleOrDefault(ii => ii.Data.ID == itemID);
 
-            if (item != null)
+            if (invItem != null)
             {
-                item.Quantity -= quantity;
+                invItem.Quantity -= quantity;
                 
-                if (item.Quantity <= 0)
+                if (invItem.Quantity <= 0)
                 {
-                    Inventory.Remove(item);
+                    Inventory.Remove(invItem);
                 }
                 
                 OnPropertyChanged("Inventory");

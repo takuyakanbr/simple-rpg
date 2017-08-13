@@ -41,8 +41,13 @@ namespace SuperAdventure
             dgvInventory.DataSource = _player.Inventory;
             dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
             {
+                DataPropertyName = "ID",
+                Visible = false
+            });
+            dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
+            {
                 HeaderText = "Name",
-                Width = 197,
+                Width = 200,
                 DataPropertyName = "Name"
             });
             dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
@@ -50,6 +55,7 @@ namespace SuperAdventure
                 HeaderText = "Quantity",
                 DataPropertyName = "Quantity"
             });
+            dgvInventory.CellClick += dgvInventory_CellClick;
 
             // Data-bindings for player quests
             dgvQuests.RowHeadersVisible = false;
@@ -58,7 +64,7 @@ namespace SuperAdventure
             dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
             {
                 HeaderText = "Name",
-                Width = 197,
+                Width = 200,
                 DataPropertyName = "Name"
             });
             dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
@@ -71,6 +77,7 @@ namespace SuperAdventure
             cboConsumable.DataSource = _player.Consumables;
             cboConsumable.DisplayMember = "Name";
             cboConsumable.ValueMember = "ID";
+            cboEntities.SelectedValueChanged += cboEntities_ValueChanged;
             cboEntities.DataSource = _state.EntitiesOnTile;
             cboEntities.DisplayMember = "Name";
             cboEntities.ValueMember = "ID";
@@ -169,6 +176,23 @@ namespace SuperAdventure
             }
         }
         
+        private void cboEntities_ValueChanged(object sender, EventArgs e)
+        {
+            var entity = (Entity)cboEntities.SelectedItem;
+            if (entity != null)
+            {
+                rtbDescription.Text = entity.Name + ": " + entity.Description;
+            }
+        }
+
+        private void dgvInventory_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            var itemID = dgvInventory.Rows[e.RowIndex].Cells[0].Value;
+            var item = World.GetItem(Convert.ToInt32(itemID));
+            rtbDescription.Text = item.Name + ": " + item.Description;
+        }
+
         private void SuperAdventure_FormClosing(object sender, FormClosingEventArgs e)
         {
             _state.SaveProfile();
@@ -196,7 +220,9 @@ namespace SuperAdventure
 
         private void btnEquipment_Click(object sender, EventArgs e)
         {
-            _state.OpenEquipment();
+            // open the equipment screen
+            EquipmentScreen screen = new EquipmentScreen(_state);
+            screen.ShowDialog(this);
         }
 
         private void btnAttack_Click(object sender, EventArgs e)

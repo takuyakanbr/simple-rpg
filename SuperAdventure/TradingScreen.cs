@@ -113,6 +113,8 @@ namespace SuperAdventure
 
         private void dgvMyItems_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex < 0) return;
+
             // The "Sell 1" button
             if (e.ColumnIndex == 4)
             {
@@ -125,7 +127,7 @@ namespace SuperAdventure
                 }
                 else
                 {
-                    _player.RemoveItemFromInventory(itemBeingSold);
+                    _player.RemoveItemFromInventory(itemBeingSold.ID);
                     _player.Gold += itemBeingSold.Price;
                     _vendor.AddItemToInventory(itemBeingSold);
                 }
@@ -134,17 +136,19 @@ namespace SuperAdventure
 
         private void dgvVendorItems_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex < 0) return;
+
             // The "Buy 1" button
             if (e.ColumnIndex == 4)
             {
-                var itemID = dgvVendorItems.Rows[e.RowIndex].Cells[0].Value;
-                Item itemBeingBought = World.GetItem(Convert.ToInt32(itemID));
+                int itemID = Convert.ToInt32(dgvVendorItems.Rows[e.RowIndex].Cells[0].Value);
+                Item itemBeingBought = World.GetItem(itemID);
                 
                 if (_player.Gold >= itemBeingBought.Price)
                 {
                     _player.AddItemToInventory(itemBeingBought);
                     _player.Gold -= itemBeingBought.Price;
-                    _vendor.RemoveItemFromInventory(itemBeingBought);
+                    _vendor.RemoveItemFromInventory(itemID);
                 }
                 else
                 {

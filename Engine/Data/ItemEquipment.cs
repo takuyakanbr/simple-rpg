@@ -8,12 +8,15 @@ namespace Engine.Data
 
     public class ItemEquipment : Item
     {
+        private static string[] TypeNames = { "Main-hand", "Off-hand", "Head", "Body", "Legs", "Hands", "Feet" };
+
         public EquipmentType Type;
-        public int LevelRequirement;
+        public int LevelRequirement { get; private set; }
         public int HitPoints;
         public int MinDamage;
         public int MaxDamage;
         public int Defence;
+        public string TypeName { get { return TypeNames[(int)Type]; } }
 
         public ItemEquipment(int id, string name, string description, int price,
             EquipmentType type, int levelRequirement, int hitPoints,

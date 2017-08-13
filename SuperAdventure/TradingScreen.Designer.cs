@@ -59,6 +59,8 @@
             // 
             this.dgvMyItems.AllowUserToAddRows = false;
             this.dgvMyItems.AllowUserToDeleteRows = false;
+            this.dgvMyItems.AllowUserToResizeColumns = false;
+            this.dgvMyItems.AllowUserToResizeRows = false;
             this.dgvMyItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvMyItems.Location = new System.Drawing.Point(13, 43);
             this.dgvMyItems.Name = "dgvMyItems";
@@ -70,6 +72,8 @@
             // 
             this.dgvVendorItems.AllowUserToAddRows = false;
             this.dgvVendorItems.AllowUserToDeleteRows = false;
+            this.dgvVendorItems.AllowUserToResizeColumns = false;
+            this.dgvVendorItems.AllowUserToResizeRows = false;
             this.dgvVendorItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvVendorItems.Location = new System.Drawing.Point(276, 43);
             this.dgvVendorItems.Name = "dgvVendorItems";
@@ -97,6 +101,8 @@
             this.Controls.Add(this.dgvMyItems);
             this.Controls.Add(this.lblVendorInventory);
             this.Controls.Add(this.lblMyInventory);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "TradingScreen";
             this.Text = "Trade";
             ((System.ComponentModel.ISupportInitialize)(this.dgvMyItems)).EndInit();

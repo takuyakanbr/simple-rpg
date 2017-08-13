@@ -51,6 +51,12 @@
     <Compile Include="DialogScreen.Designer.cs">
       <DependentUpon>DialogScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="EquipmentScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EquipmentScreen.Designer.cs">
+      <DependentUpon>EquipmentScreen.cs</DependentUpon>
+    </Compile>
     <Compile Include="SuperAdventure.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,6 +73,9 @@
     </Compile>
     <EmbeddedResource Include="DialogScreen.resx">
       <DependentUpon>DialogScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EquipmentScreen.resx">
+      <DependentUpon>EquipmentScreen.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

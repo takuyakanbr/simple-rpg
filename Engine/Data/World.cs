@@ -113,6 +113,10 @@ namespace Engine.Data
             AddItem(new ItemConsumable(2, "Potion", "Heals 20 HP.", 10, 20));
             AddItem(new ItemEquipment(3, "Wooden stick", "It looks like it's rotting.",
                 5, EquipmentType.MainHand, 1, 0, 1, 4, 0));
+            AddItem(new ItemEquipment(4, "Metal bar", "It looks like it's rusting.",
+                10, EquipmentType.MainHand, 1, 0, 2, 8, 0));
+            AddItem(new ItemEquipment(5, "Sandals", "Protection against sand.",
+                5, EquipmentType.Feet, 1, 0, 0, 0, 1));
         }
 
         private static void PopulateMonsters()

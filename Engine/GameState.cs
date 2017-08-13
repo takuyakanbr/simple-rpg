@@ -223,12 +223,6 @@ namespace Engine
             MoveDirection(CurrentTile.West, "west");
         }
         
-        // open equipment screen
-        public void OpenEquipment()
-        {
-
-        }
-
         // append a message to the message textbox
         public void RaiseMessage(string message, bool addExtraNewLine = false)
         {
@@ -251,7 +245,7 @@ namespace Engine
         public void UseConsumable(ItemConsumable consumable)
         {
             Player.CurrentHitPoints += consumable.HitPoints;
-            Player.RemoveItemFromInventory(consumable, 1);
+            Player.RemoveItemFromInventory(consumable.ID, 1);
             RaiseMessage("You consume a " + consumable.Name);
             
             DoMonsterMove();

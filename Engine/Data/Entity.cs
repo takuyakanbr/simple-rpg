@@ -7,8 +7,8 @@ namespace Engine.Data
     // contains data about an entity (objects / NPC)
     public class Entity
     {
-        public int ID { get; set; }
-        public string Name { get; set; }
+        public int ID { get; private set; }
+        public string Name { get; private set; }
         public string Description;
 
         // run when interactable is being added to map;

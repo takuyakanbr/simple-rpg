@@ -15,8 +15,8 @@ namespace Engine.Data
 
     public class Item
     {
-        public int ID { get; set; }
-        public string Name { get; set; }
+        public int ID { get; private set; }
+        public string Name { get; private set; }
         public string Description;
         public int Price;
         public ItemFlags Flags;
