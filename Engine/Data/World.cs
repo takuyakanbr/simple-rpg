@@ -22,7 +22,7 @@ namespace Engine.Data
             return Entities[id];
         }
 
-        private static Item AddItem(Item item)
+        private static Item Add(Item item)
         {
             Items[item.ID] = item;
             return item;
@@ -110,12 +110,12 @@ namespace Engine.Data
         {
             AddItem(0, "Butterfly wing", "I hear someone is collecting this.", 1);
             AddItem(1, "Rat tail", "Eew. Why did I take this with me?", 1);
-            AddItem(new ItemConsumable(2, "Potion", "Heals 20 HP.", 10, 20));
-            AddItem(new ItemEquipment(3, "Wooden stick", "It looks like it's rotting.",
+            Add(new ItemConsumable(2, "Potion", "Heals 20 HP.", 10, 20));
+            Add(new ItemEquipment(3, "Wooden stick", "It looks like it's rotting.",
                 5, EquipmentType.MainHand, 1, 0, 1, 4, 0));
-            AddItem(new ItemEquipment(4, "Metal bar", "It looks like it's rusting.",
-                10, EquipmentType.MainHand, 1, 0, 2, 8, 0));
-            AddItem(new ItemEquipment(5, "Sandals", "Protection against sand.",
+            Add(new ItemEquipment(4, "Metal bar", "It looks like it's rusting.",
+                10, EquipmentType.MainHand, 2, 0, 2, 8, 0));
+            Add(new ItemEquipment(5, "Sandals", "Protection against sand.",
                 5, EquipmentType.Feet, 1, 0, 0, 0, 1));
         }
 
@@ -129,7 +129,7 @@ namespace Engine.Data
 
         private static void PopulateQuests()
         {
-
+            AddQuest(0, "Collect butterfly wings", "Help Madam Jacqueline collect butterfly wings.", 1, 25, 10);
         }
 
         private static void PopulateVendors()
@@ -140,12 +140,54 @@ namespace Engine.Data
         private static void PopulateEntities()
         {
             AddEntity(0, "Madam Jacqueline", "She's eagerly watching you.")
-                .OnInteract = delegate(GameState state, Player player)
+                .OnInteract = delegate(GameState s, Player p)
                 {
-                    if (state.InteractCounter == 0)
-                        state.ShowDialog("Hello, my dear.", new string[] { "Hello." });
-                    else if (state.InteractCounter == 1)
-                        state.ShowDialog("Yes, yes. Please go away now.", null);
+                    if (p.IsQuestComplete(0))
+                    {
+                        if (s.InteractCounter == 0)
+                            s.ShowDialog("Thank you so much for the butterfly wings!", new string[] { "What did you use them for?" });
+                        else if (s.InteractCounter == 1)
+                            s.ShowDialog("I'm incorporating them in my latest art project. It'll be a sight to behold!");
+                        return;
+                    }
+
+                    if (p.HasQuest(0))
+                    {
+                        if (p.HasItem(0, 8))
+                        {
+                            s.ShowDialog("I see you've brought me the 8 butterfly wings. Here's 10 gold, for your troubles.");
+                            p.RemoveItemFromInventory(0, 8);
+                            p.CompleteQuest(0);
+                            return;
+                        }
+                        s.ShowDialog("Don't forget to bring me 8 butterfly wings! I'll be waiting here for you.");
+                        return;
+                    }
+
+                    switch (s.InteractCounter)
+                    {
+                        case 0:
+                            s.ShowDialog("My hero! You're just the person I'm looking for!", new string[] { "What?" });
+                            break;
+                        case 1:
+                            s.ShowDialog("You see, I'm in a bit of a bind right now. I'm in need of 100 butterfly wings but I'm too busy to collect them myself. Say... will you help me please?", new string[] { "No way, I'm not some dumb protagonist in a videogame." });
+                            break;
+                        case 2:
+                            s.ShowDialog("Okay, okay, I understand if it may be a bit too much. How about just 8 butterfly wings? I'll be sure to reward you!", new string[] { "Alright then.", "No, sorry." });
+                            break;
+                        case 3:
+                            if (s.InteractChoice == 1)
+                            {
+                                s.ShowDialog("Great! Here's a Wooden stick to speed up the process of beating up the butterflies.");
+                                p.UpdateQuest(0, 0);
+                                p.AddItemToInventory(3);
+                            }
+                            else
+                            {
+                                s.ShowDialog("I guess I'll just have to find someone else. Do come back if you change your mind!");
+                            }
+                            break;
+                    }
                 };
         }
 

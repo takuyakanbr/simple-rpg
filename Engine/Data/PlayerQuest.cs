@@ -30,6 +30,7 @@ namespace Engine.Data
             }
         }
 
+        public int ID { get { return _data.ID; } }
         public string Name { get { return _data.Name; } }
 
         public PlayerQuest(Quest data, int state = 0, bool isComplete = false)

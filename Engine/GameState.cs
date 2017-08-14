@@ -235,7 +235,7 @@ namespace Engine
         }
 
         // show/update the dialog screen
-        public void ShowDialog(string text, string[] options)
+        public void ShowDialog(string text, string[] options = null)
         {
             OnDialogEvent?.Invoke(this, 
                 new DialogEventArgs(DialogEventType.Update, CurrentEntity.Name + ": " + text, options));

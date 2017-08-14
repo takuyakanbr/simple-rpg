@@ -152,6 +152,24 @@ namespace Engine
             RaiseInventoryChangedEvent(invItem.Data);
         }
         
+        // mark the specified quest as completed and give the player the rewards
+        public void CompleteQuest(int questID)
+        {
+            PlayerQuest playerQuest = Quests.SingleOrDefault(
+                pq => pq.ID == questID);
+
+            if (playerQuest != null)
+            {
+                foreach (var item in playerQuest.Data.RewardItems)
+                {
+                    AddItemToInventory(item.Data, item.Quantity);
+                }
+                ExperiencePoints += playerQuest.Data.RewardXP;
+                Gold += playerQuest.Data.RewardGold;
+                playerQuest.IsComplete = true;
+            }
+        }
+
         // equips the specified item, returns true if successful
         public bool EquipItem(int itemID)
         {
@@ -173,11 +191,13 @@ namespace Engine
             return false;
         }
 
-        public int GetQuestState(Quest quest)
+        // gets the state of the specified quest;
+        // returns -1 if the player has not received it yet
+        public int GetQuestState(int questID)
         {
             foreach (PlayerQuest playerQuest in Quests)
             {
-                if (playerQuest.Data.ID == quest.ID)
+                if (playerQuest.ID == questID)
                 {
                     return playerQuest.State;
                 }
@@ -185,16 +205,33 @@ namespace Engine
             return -1;
         }
 
-        public bool HasQuest(Quest quest)
+        public bool HasItem(int itemID, int quantity = 1)
         {
-            return Quests.Any(pq => pq.Data.ID == quest.ID);
+            InventoryItem invItem = Inventory.SingleOrDefault(ii => ii.ID == itemID);
+            return invItem != null && invItem.Quantity >= quantity;
         }
 
-        public bool IsQuestComplete(Quest quest)
+        public bool HasQuest(int questID)
+        {
+            return Quests.Any(pq => pq.ID == questID);
+        }
+        
+        public bool HasQuestPrerequisites(int questID)
+        {
+            Quest quest = World.GetQuest(questID);
+            foreach (int req in quest.QuestRequirements)
+            {
+                if (!IsQuestComplete(req))
+                    return false;
+            }
+            return Level >= quest.LevelRequirement;
+        }
+
+        public bool IsQuestComplete(int questID)
         {
             foreach (PlayerQuest playerQuest in Quests)
             {
-                if (playerQuest.Data.ID == quest.ID)
+                if (playerQuest.ID == questID)
                 {
                     return playerQuest.IsComplete;
                 }
@@ -210,6 +247,7 @@ namespace Engine
             }
         }
 
+        // recalculate the player's attack and defence data
         public void RecalculateStats()
         {
             int minDamage = 0, maxDamage = 2, defence = 0;
@@ -358,15 +396,18 @@ namespace Engine
             return false;
         }
 
-        public void UpdateQuest(Quest quest, int state, bool isComplete = false)
+        public void UpdateQuest(int questID, int state)
         {
             PlayerQuest playerQuest = Quests.SingleOrDefault(
-                pq => pq.Data.ID == quest.ID);
+                pq => pq.ID == questID);
 
-            if (playerQuest != null)
+            if (playerQuest == null)
+            {
+                Quests.Add(new PlayerQuest(World.GetQuest(questID), state, false));
+            }
+            else
             {
                 playerQuest.State = state;
-                playerQuest.IsComplete = isComplete;
             }
         }
 
@@ -374,10 +415,6 @@ namespace Engine
         {
             Player player = new Player(100, 100, 20, 0, 1);
             player.CurrentTile = World.GetTile(player.HomeTileID);
-            player.AddItemToInventory(2);
-            player.AddItemToInventory(3);
-            player.AddItemToInventory(4);
-            player.AddItemToInventory(5);
 
             return player;
         }

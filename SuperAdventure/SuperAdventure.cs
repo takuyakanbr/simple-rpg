@@ -63,6 +63,11 @@ namespace SuperAdventure
             dgvQuests.DataSource = _player.Quests;
             dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
             {
+                DataPropertyName = "ID",
+                Visible = false
+            });
+            dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
+            {
                 HeaderText = "Name",
                 Width = 200,
                 DataPropertyName = "Name"
@@ -72,6 +77,7 @@ namespace SuperAdventure
                 HeaderText = "Done?",
                 DataPropertyName = "IsComplete"
             });
+            dgvQuests.CellClick += dgvQuests_CellClick;
 
             // Data-bindings for comboboxes
             cboConsumable.DataSource = _player.Consumables;
@@ -191,6 +197,14 @@ namespace SuperAdventure
             var itemID = dgvInventory.Rows[e.RowIndex].Cells[0].Value;
             var item = World.GetItem(Convert.ToInt32(itemID));
             rtbDescription.Text = item.Name + ": " + item.Description;
+        }
+
+        private void dgvQuests_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            var questID = dgvQuests.Rows[e.RowIndex].Cells[0].Value;
+            var quest = World.GetQuest(Convert.ToInt32(questID));
+            rtbDescription.Text = quest.Name + ": " + quest.Description;
         }
 
         private void SuperAdventure_FormClosing(object sender, FormClosingEventArgs e)
