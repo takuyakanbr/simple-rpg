@@ -30,12 +30,8 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.lblHitPoints = new System.Windows.Forms.Label();
             this.lblGold = new System.Windows.Forms.Label();
-            this.lblExperience = new System.Windows.Forms.Label();
-            this.lblLevel = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.cboEntities = new System.Windows.Forms.ComboBox();
             this.cboConsumable = new System.Windows.Forms.ComboBox();
@@ -52,14 +48,24 @@
             this.btnAttack = new System.Windows.Forms.Button();
             this.btnEquipment = new System.Windows.Forms.Button();
             this.rtbDescription = new System.Windows.Forms.RichTextBox();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabSkills = new System.Windows.Forms.TabPage();
+            this.tabInventory = new System.Windows.Forms.TabPage();
+            this.tabQuests = new System.Windows.Forms.TabPage();
+            this.dgvSkills = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.dgvInventory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQuests)).BeginInit();
+            this.tabControl1.SuspendLayout();
+            this.tabSkills.SuspendLayout();
+            this.tabInventory.SuspendLayout();
+            this.tabQuests.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSkills)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(18, 20);
+            this.label1.Location = new System.Drawing.Point(18, 26);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(55, 13);
             this.label1.TabIndex = 0;
@@ -68,34 +74,16 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(18, 46);
+            this.label2.Location = new System.Drawing.Point(18, 55);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(32, 13);
             this.label2.TabIndex = 1;
             this.label2.Text = "Gold:";
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(18, 74);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(63, 13);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Experience:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(18, 100);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(36, 13);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Level:";
-            // 
             // lblHitPoints
             // 
             this.lblHitPoints.AutoSize = true;
-            this.lblHitPoints.Location = new System.Drawing.Point(110, 19);
+            this.lblHitPoints.Location = new System.Drawing.Point(110, 25);
             this.lblHitPoints.Name = "lblHitPoints";
             this.lblHitPoints.Size = new System.Drawing.Size(0, 13);
             this.lblHitPoints.TabIndex = 4;
@@ -103,26 +91,10 @@
             // lblGold
             // 
             this.lblGold.AutoSize = true;
-            this.lblGold.Location = new System.Drawing.Point(110, 45);
+            this.lblGold.Location = new System.Drawing.Point(110, 54);
             this.lblGold.Name = "lblGold";
             this.lblGold.Size = new System.Drawing.Size(0, 13);
             this.lblGold.TabIndex = 5;
-            // 
-            // lblExperience
-            // 
-            this.lblExperience.AutoSize = true;
-            this.lblExperience.Location = new System.Drawing.Point(110, 73);
-            this.lblExperience.Name = "lblExperience";
-            this.lblExperience.Size = new System.Drawing.Size(0, 13);
-            this.lblExperience.TabIndex = 6;
-            // 
-            // lblLevel
-            // 
-            this.lblLevel.AutoSize = true;
-            this.lblLevel.Location = new System.Drawing.Point(110, 99);
-            this.lblLevel.Name = "lblLevel";
-            this.lblLevel.Size = new System.Drawing.Size(0, 13);
-            this.lblLevel.TabIndex = 7;
             // 
             // label5
             // 
@@ -237,13 +209,13 @@
             this.dgvInventory.AllowUserToResizeRows = false;
             this.dgvInventory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvInventory.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.dgvInventory.Location = new System.Drawing.Point(16, 130);
+            this.dgvInventory.Location = new System.Drawing.Point(0, 0);
             this.dgvInventory.MultiSelect = false;
             this.dgvInventory.Name = "dgvInventory";
             this.dgvInventory.ReadOnly = true;
             this.dgvInventory.RowHeadersVisible = false;
             this.dgvInventory.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvInventory.Size = new System.Drawing.Size(312, 305);
+            this.dgvInventory.Size = new System.Drawing.Size(308, 403);
             this.dgvInventory.TabIndex = 19;
             // 
             // dgvQuests
@@ -254,13 +226,13 @@
             this.dgvQuests.AllowUserToResizeRows = false;
             this.dgvQuests.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvQuests.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.dgvQuests.Location = new System.Drawing.Point(16, 441);
+            this.dgvQuests.Location = new System.Drawing.Point(0, 0);
             this.dgvQuests.MultiSelect = false;
             this.dgvQuests.Name = "dgvQuests";
             this.dgvQuests.ReadOnly = true;
             this.dgvQuests.RowHeadersVisible = false;
             this.dgvQuests.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvQuests.Size = new System.Drawing.Size(312, 113);
+            this.dgvQuests.Size = new System.Drawing.Size(308, 403);
             this.dgvQuests.TabIndex = 20;
             // 
             // btnAttack
@@ -285,23 +257,83 @@
             // 
             // rtbDescription
             // 
-            this.rtbDescription.Location = new System.Drawing.Point(16, 560);
+            this.rtbDescription.Location = new System.Drawing.Point(16, 538);
             this.rtbDescription.Name = "rtbDescription";
             this.rtbDescription.ReadOnly = true;
-            this.rtbDescription.Size = new System.Drawing.Size(312, 79);
+            this.rtbDescription.Size = new System.Drawing.Size(312, 101);
             this.rtbDescription.TabIndex = 23;
             this.rtbDescription.Text = "";
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabSkills);
+            this.tabControl1.Controls.Add(this.tabInventory);
+            this.tabControl1.Controls.Add(this.tabQuests);
+            this.tabControl1.Location = new System.Drawing.Point(12, 90);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(316, 429);
+            this.tabControl1.TabIndex = 24;
+            // 
+            // tabSkills
+            // 
+            this.tabSkills.Controls.Add(this.dgvSkills);
+            this.tabSkills.Location = new System.Drawing.Point(4, 22);
+            this.tabSkills.Name = "tabSkills";
+            this.tabSkills.Padding = new System.Windows.Forms.Padding(3);
+            this.tabSkills.Size = new System.Drawing.Size(308, 403);
+            this.tabSkills.TabIndex = 0;
+            this.tabSkills.Text = "Skills";
+            this.tabSkills.UseVisualStyleBackColor = true;
+            // 
+            // tabInventory
+            // 
+            this.tabInventory.Controls.Add(this.dgvInventory);
+            this.tabInventory.Location = new System.Drawing.Point(4, 22);
+            this.tabInventory.Name = "tabInventory";
+            this.tabInventory.Padding = new System.Windows.Forms.Padding(3);
+            this.tabInventory.Size = new System.Drawing.Size(308, 403);
+            this.tabInventory.TabIndex = 1;
+            this.tabInventory.Text = "Inventory";
+            this.tabInventory.UseVisualStyleBackColor = true;
+            // 
+            // tabQuests
+            // 
+            this.tabQuests.Controls.Add(this.dgvQuests);
+            this.tabQuests.Location = new System.Drawing.Point(4, 22);
+            this.tabQuests.Name = "tabQuests";
+            this.tabQuests.Padding = new System.Windows.Forms.Padding(3);
+            this.tabQuests.Size = new System.Drawing.Size(308, 403);
+            this.tabQuests.TabIndex = 2;
+            this.tabQuests.Text = "Quests";
+            this.tabQuests.UseVisualStyleBackColor = true;
+            // 
+            // dgvSkills
+            // 
+            this.dgvSkills.AllowUserToAddRows = false;
+            this.dgvSkills.AllowUserToDeleteRows = false;
+            this.dgvSkills.AllowUserToResizeColumns = false;
+            this.dgvSkills.AllowUserToResizeRows = false;
+            this.dgvSkills.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvSkills.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.dgvSkills.Location = new System.Drawing.Point(0, 0);
+            this.dgvSkills.MultiSelect = false;
+            this.dgvSkills.Name = "dgvSkills";
+            this.dgvSkills.ReadOnly = true;
+            this.dgvSkills.RowHeadersVisible = false;
+            this.dgvSkills.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvSkills.Size = new System.Drawing.Size(308, 403);
+            this.dgvSkills.TabIndex = 20;
             // 
             // SuperAdventure
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(719, 651);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.rtbDescription);
             this.Controls.Add(this.btnEquipment);
             this.Controls.Add(this.btnAttack);
-            this.Controls.Add(this.dgvQuests);
-            this.Controls.Add(this.dgvInventory);
             this.Controls.Add(this.rtbMessages);
             this.Controls.Add(this.rtbLocation);
             this.Controls.Add(this.btnWest);
@@ -313,19 +345,20 @@
             this.Controls.Add(this.cboConsumable);
             this.Controls.Add(this.cboEntities);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.lblLevel);
-            this.Controls.Add(this.lblExperience);
             this.Controls.Add(this.lblGold);
             this.Controls.Add(this.lblHitPoints);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "SuperAdventure";
-            this.Text = "Super Adventure";
+            this.Text = "Simple RPG";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SuperAdventure_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.dgvInventory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQuests)).EndInit();
+            this.tabControl1.ResumeLayout(false);
+            this.tabSkills.ResumeLayout(false);
+            this.tabInventory.ResumeLayout(false);
+            this.tabQuests.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSkills)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -335,12 +368,8 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblHitPoints;
         private System.Windows.Forms.Label lblGold;
-        private System.Windows.Forms.Label lblExperience;
-        private System.Windows.Forms.Label lblLevel;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox cboEntities;
         private System.Windows.Forms.ComboBox cboConsumable;
@@ -357,6 +386,11 @@
         private System.Windows.Forms.Button btnAttack;
         private System.Windows.Forms.Button btnEquipment;
         private System.Windows.Forms.RichTextBox rtbDescription;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabSkills;
+        private System.Windows.Forms.TabPage tabInventory;
+        private System.Windows.Forms.TabPage tabQuests;
+        private System.Windows.Forms.DataGridView dgvSkills;
     }
 }
 

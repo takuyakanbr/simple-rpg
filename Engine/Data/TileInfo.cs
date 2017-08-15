@@ -28,15 +28,15 @@ namespace Engine.Data
             MonsterSpawns = new List<MonsterSpawn>();
         }
 
-        public TileInfo AddEntity(Entity entity)
+        public TileInfo AddEntity(int entityID)
         {
-            Entities.Add(entity);
+            Entities.Add(World.GetEntity(entityID));
             return this;
         }
 
-        public TileInfo AddMonsterSpawn(Monster data, double spawnChance, bool canAvoid = true, bool initiative = false)
+        public TileInfo AddMonsterSpawn(int monsterID, double spawnChance, bool canAvoid = true, bool initiative = false)
         {
-            MonsterSpawns.Add(new MonsterSpawn(data, spawnChance, canAvoid, initiative));
+            MonsterSpawns.Add(new MonsterSpawn(World.GetMonster(monsterID), spawnChance, canAvoid, initiative));
             return this;
         }
     }

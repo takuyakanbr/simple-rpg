@@ -32,8 +32,34 @@ namespace SuperAdventure
             // Data-bindings for player stats
             lblHitPoints.DataBindings.Add("Text", _player, "CurrentHitPoints");
             lblGold.DataBindings.Add("Text", _player, "Gold");
-            lblExperience.DataBindings.Add("Text", _player, "ExperiencePoints");
-            lblLevel.DataBindings.Add("Text", _player, "Level");
+
+            // Data-bindings for player skills
+            dgvSkills.RowHeadersVisible = false;
+            dgvSkills.AutoGenerateColumns = false;
+            dgvSkills.DataSource = _player.Skills;
+            dgvSkills.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "ID",
+                Visible = false
+            });
+            dgvSkills.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Name",
+                Width = 190,
+                DataPropertyName = "Name"
+            });
+            dgvSkills.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Lvl",
+                Width = 40,
+                DataPropertyName = "Level"
+            });
+            dgvSkills.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "XP",
+                Width = 50,
+                DataPropertyName = "Experience"
+            });
 
             // Data-bindings for player inventory
             dgvInventory.RowHeadersVisible = false;
@@ -53,6 +79,7 @@ namespace SuperAdventure
             dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
             {
                 HeaderText = "Quantity",
+                Width = 80,
                 DataPropertyName = "Quantity"
             });
             dgvInventory.CellClick += dgvInventory_CellClick;
@@ -75,6 +102,7 @@ namespace SuperAdventure
             dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
             {
                 HeaderText = "Done?",
+                Width = 80,
                 DataPropertyName = "IsComplete"
             });
             dgvQuests.CellClick += dgvQuests_CellClick;

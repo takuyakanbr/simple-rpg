@@ -12,8 +12,6 @@ namespace Engine
     {
         private int _currentHitPoints;
         private int _gold;
-        private int _experiencePoints;
-        private int _level;
         private Tile _currentTile;
 
         public int CurrentHitPoints
@@ -37,24 +35,6 @@ namespace Engine
                 OnPropertyChanged("Gold");
             }
         }
-        public int ExperiencePoints
-        {
-            get { return _experiencePoints; }
-            private set
-            {
-                _experiencePoints = value;
-                OnPropertyChanged("ExperiencePoints");
-            }
-        }
-        public int Level
-        {
-            get { return _level; }
-            private set
-            {
-                _level = value;
-                OnPropertyChanged("Level");
-            }
-        }
         public Tile CurrentTile {
             get { return _currentTile; }
             set
@@ -64,6 +44,7 @@ namespace Engine
             }
         }
         public int HomeTileID = 0;
+        public BindingList<PlayerSkill> Skills { get; set; }
         public BindingList<InventoryItem> Inventory { get; set; }
         public BindingList<PlayerQuest> Quests { get; set; }
         public BindingList<ItemEquipment> Equipment { get; set; }
@@ -91,32 +72,25 @@ namespace Engine
             }
         }
 
-        private Player(int currentHitPoints, int maximumHitPoints,
-            int gold, int experiencePoints, int level)
+        private Player(int currentHitPoints, int maximumHitPoints, int gold)
         {
             MaximumHitPoints = maximumHitPoints;
             CurrentHitPoints = currentHitPoints;
             Gold = gold;
-            ExperiencePoints = experiencePoints;
-            Level = level;
+            Skills = PlayerSkill.GetDefaultList();
             Inventory = new BindingList<InventoryItem>();
             Quests = new BindingList<PlayerQuest>();
             Equipment = new BindingList<ItemEquipment>();
         }
 
-        public void AddExperiencePoints(int points)
+        public void AddExperience(SkillType type, int points)
         {
-            ExperiencePoints += points;
-            if (Level >= 100)
-            {
-                return; // Maximum level is 100
-            }
-            if (ExperiencePoints >= Level * 100 + Math.Pow(Level, 2) * 100)
-            {
-                Level += 1;
-                MaximumHitPoints += 10;
-                CurrentHitPoints += 10;
-            }
+            Skills.ElementAt((int)type).AddExperience(points);
+        }
+
+        public void AddExperience(int points)
+        {
+            Skills.ElementAt((int)SkillType.Combat).AddExperience(points);
         }
         
         public void AddItemToInventory(Item item, int quantity = 1)
@@ -164,7 +138,7 @@ namespace Engine
                 {
                     AddItemToInventory(item.Data, item.Quantity);
                 }
-                ExperiencePoints += playerQuest.Data.RewardXP;
+                AddExperience(playerQuest.Data.RewardXP);
                 Gold += playerQuest.Data.RewardGold;
                 playerQuest.IsComplete = true;
             }
@@ -189,6 +163,11 @@ namespace Engine
                 return true;
             }
             return false;
+        }
+
+        public int GetLevel(SkillType type = SkillType.Combat)
+        {
+            return Skills.ElementAt((int)type).Level;
         }
 
         // gets the state of the specified quest;
@@ -224,7 +203,13 @@ namespace Engine
                 if (!IsQuestComplete(req))
                     return false;
             }
-            return Level >= quest.LevelRequirement;
+            return GetLevel() >= quest.LevelRequirement;
+        }
+
+        public bool HasTypeEquipped(EquipmentType type)
+        {
+            ItemEquipment item = Equipment.SingleOrDefault(ie => ie.Type == type);
+            return item != null;
         }
 
         public bool IsQuestComplete(int questID)
@@ -238,7 +223,7 @@ namespace Engine
             }
             return false;
         }
-
+        
         private void RaiseInventoryChangedEvent(Item item)
         {
             if (item is ItemConsumable)
@@ -247,16 +232,18 @@ namespace Engine
             }
         }
 
-        // recalculate the player's attack and defence data
+        // recalculate the player's hp, attack and defence data
         public void RecalculateStats()
         {
-            int minDamage = 0, maxDamage = 2, defence = 0;
+            int minDamage = 0, maxDamage = 2, defence = 0, maxHP = 90 + GetLevel() * 10;
             foreach (var equipment in Equipment)
             {
+                maxHP += equipment.HitPoints;
                 minDamage += equipment.MinDamage;
                 maxDamage += equipment.MaxDamage;
                 defence += equipment.Defence;
             }
+            MaximumHitPoints = maxHP;
             MinDamage = minDamage;
             MaxDamage = maxDamage;
             Defence = defence;
@@ -303,14 +290,6 @@ namespace Engine
             gold.AppendChild(saveData.CreateTextNode(Gold.ToString()));
             stats.AppendChild(gold);
 
-            XmlNode experiencePoints = saveData.CreateElement("ExperiencePoints");
-            experiencePoints.AppendChild(saveData.CreateTextNode(ExperiencePoints.ToString()));
-            stats.AppendChild(experiencePoints);
-
-            XmlNode level = saveData.CreateElement("Level");
-            level.AppendChild(saveData.CreateTextNode(Level.ToString()));
-            stats.AppendChild(level);
-
             XmlNode homeTile = saveData.CreateElement("HomeTile");
             homeTile.AppendChild(saveData.CreateTextNode(HomeTileID.ToString()));
             stats.AppendChild(homeTile);
@@ -318,6 +297,30 @@ namespace Engine
             XmlNode currentTile = saveData.CreateElement("CurrentTile");
             currentTile.AppendChild(saveData.CreateTextNode(CurrentTile.ID.ToString()));
             stats.AppendChild(currentTile);
+
+            // Create the "PlayerSkills" child node to hold each PlayerSkill node
+            XmlNode playerSkills = saveData.CreateElement("PlayerSkills");
+            player.AppendChild(playerSkills);
+
+            // Create an "PlayerSkill" node for each skill
+            foreach (PlayerSkill skill in Skills)
+            {
+                XmlNode playerSkill = saveData.CreateElement("PlayerSkill");
+
+                XmlAttribute typeAttribute = saveData.CreateAttribute("Type");
+                typeAttribute.Value = skill.ID.ToString();
+                playerSkill.Attributes.Append(typeAttribute);
+
+                XmlAttribute levelAttribute = saveData.CreateAttribute("Level");
+                levelAttribute.Value = skill.Level.ToString();
+                playerSkill.Attributes.Append(levelAttribute);
+
+                XmlAttribute experienceAttribute = saveData.CreateAttribute("Experience");
+                experienceAttribute.Value = skill.Experience.ToString();
+                playerSkill.Attributes.Append(experienceAttribute);
+
+                playerSkills.AppendChild(playerSkill);
+            }
 
             // Create the "InventoryItems" child node to hold each InventoryItem node
             XmlNode inventoryItems = saveData.CreateElement("InventoryItems");
@@ -411,9 +414,14 @@ namespace Engine
             }
         }
 
+        public void UpdateSkill(int type, int level, int points)
+        {
+            Skills.ElementAt(type).Update(level, points);
+        }
+
         public static Player CreateDefaultPlayer()
         {
-            Player player = new Player(100, 100, 20, 0, 1);
+            Player player = new Player(100, 100, 20);
             player.CurrentTile = World.GetTile(player.HomeTileID);
 
             return player;
@@ -430,15 +438,21 @@ namespace Engine
                 int currentHitPoints = Convert.ToInt32(saveData.SelectSingleNode("/Player/Stats/CurrentHitPoints").InnerText);
                 int maximumHitPoints = Convert.ToInt32(saveData.SelectSingleNode("/Player/Stats/MaximumHitPoints").InnerText);
                 int gold = Convert.ToInt32(saveData.SelectSingleNode("/Player/Stats/Gold").InnerText);
-                int experiencePoints = Convert.ToInt32(saveData.SelectSingleNode("/Player/Stats/ExperiencePoints").InnerText);
-                int level = Convert.ToInt32(saveData.SelectSingleNode("/Player/Stats/Level").InnerText);
 
-                Player player = new Player(currentHitPoints, maximumHitPoints, gold, experiencePoints, level);
+                Player player = new Player(currentHitPoints, maximumHitPoints, gold);
                 player.HomeTileID = Convert.ToInt32(saveData.SelectSingleNode("/Player/Stats/HomeTile").InnerText);
 
                 int currentTileID = Convert.ToInt32(saveData.SelectSingleNode("/Player/Stats/CurrentTile").InnerText);
                 player.CurrentTile = World.GetTile(currentTileID);
                 
+                foreach (XmlNode node in saveData.SelectNodes("/Player/PlayerSkills/PlayerSkill"))
+                {
+                    int type = Convert.ToInt32(node.Attributes["Type"].Value);
+                    int level = Convert.ToInt32(node.Attributes["Level"].Value);
+                    int experience = Convert.ToInt32(node.Attributes["Experience"].Value);
+                    player.UpdateSkill(type, level, experience);
+                }
+
                 foreach (XmlNode node in saveData.SelectNodes("/Player/InventoryItems/InventoryItem"))
                 {
                     int id = Convert.ToInt32(node.Attributes["ID"].Value);

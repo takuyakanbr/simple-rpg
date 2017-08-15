@@ -12,8 +12,8 @@ namespace Engine.Data
         private static Item[] Items = new Item[25];
         private static Monster[] Monsters = new Monster[25];
         private static Quest[] Quests = new Quest[10];
-        private static Tile[] Tiles = new Tile[25];
-        private static TileInfo[] TileInfos = new TileInfo[25];
+        private static Tile[] Tiles = new Tile[100];
+        private static TileInfo[] TileInfos = new TileInfo[50];
         private static Vendor[] Vendors = new Vendor[10];
         
         private static Entity AddEntity(int id, string name, string description)
@@ -140,7 +140,7 @@ namespace Engine.Data
         private static void PopulateEntities()
         {
             AddEntity(0, "Madam Jacqueline", "She's eagerly watching you.")
-                .OnInteract = delegate(GameState s, Player p)
+                .OnInteract = delegate (GameState s, Player p)
                 {
                     if (p.IsQuestComplete(0))
                     {
@@ -189,18 +189,56 @@ namespace Engine.Data
                             break;
                     }
                 };
+            var e1 = AddEntity(1, "Seashell", "She sells seashells by the sea shore.");
+            e1.OnCreate = delegate (GameState s, Player p)
+            {
+                return RandomGenerator.NextDouble() < 0.25;
+            };
+            e1.OnInteract = delegate (GameState s, Player p)
+            {
+                s.TakeDamage(3);
+                s.RaiseMessage("Ouch! A crab climbs out of the shell and bites your finger.");
+            };
         }
 
         private static void PopulateTiles()
         {
-            var ti1 = AddTileInfo(1, "Plains", "Western Knoxville, Kingdom of Fulgar", "You see a small town to the east.").AddMonsterSpawn(GetMonster(0), 0.75);
-            AddTileGrid(ti1, 1, 3, 3); // tiles 1 - 9
-
-            var ti0 = AddTileInfo(0, "Landing Pad", "Western Knoxville, Kingdom of Fulgar", "Why is there a convenient landing pad here? A spawn point for me?!").AddEntity(GetEntity(0));
-            AddTile(0, ti0).ConnectSouth(GetTile(1));
-
+            var ti0 = AddTileInfo(0, "Landing Pad", "Western Knoxville, Kingdom of Fulgar", "Why is there a convenient landing pad here? A spawn point for me?!").AddEntity(0);
+            var ti1 = AddTileInfo(1, "Plains", "Western Knoxville, Kingdom of Fulgar", "You see a small town to the east.").AddMonsterSpawn(0, 0.75);
             var ti2 = AddTileInfo(2, "Gate", "Knoxville, Kingdom of Fulgar", "A guard waves at you, 'Welcome to Knoxville, traveller.'");
-            AddTile(10, ti2).ConnectWest(GetTile(6));
+            var ti3 = AddTileInfo(3, "Town", "Knoxville, Kingdom of Fulgar", "A peaceful, small town. There's 2 gates, to the north, and to the west. A small dock sits at the shore to the east.");
+            var ti4 = AddTileInfo(4, "Town", "Knoxville, Kingdom of Fulgar", "A peaceful, small town. There's 2 gates, to the north, and to the west. A small dock sits at the shore to the east.");
+            var ti5 = AddTileInfo(5, "Docks", "Knoxville, Kingdom of Fulgar", "A nice place to fish, and to catch the sunrise.");
+            var ti6 = AddTileInfo(6, "Market", "Knoxville, Kingdom of Fulgar", "Fresh produce, and lots of fish.");
+            var ti7 = AddTileInfo(7, "House", "Knoxville, Kingdom of Fulgar", "A nice, spacious home. In fact, as far as you can see, it's the nicest one in this town.");
+            var ti8 = AddTileInfo(8, "House", "Knoxville, Kingdom of Fulgar", "A small place, with tools used by craftsmen.");
+            var ti9 = AddTileInfo(9, "Beach", "Western Knoxville, Kingdom of Fulgar", "The sound of waves crashing against the shore is so soothing...").AddEntity(1);
+            var ti10 = AddTileInfo(10, "Mine Entrance", "Western Knoxville, Kingdom of Fulgar", "There's sounds of metal striking against rock coming from inside.");
+            var ti11 = AddTileInfo(11, "Mines", "Western Knoxville, Kingdom of Fulgar", "Hot, dirty, and full of rats. Why would anyone choose to work here?");
+
+            AddTileGrid(ti1, 1, 3, 3); // plains 1-9
+            AddTile(0, ti0) // landing pad
+                .ConnectSouth(GetTile(1));
+            AddTileGrid(ti3, 11, 3, 1); // town 11-13
+            AddTileGrid(ti3, 15, 1, 4); // town 15-18
+            AddTileGrid(ti5, 19, 2, 1); // docks 19-20
+            AddTileGrid(ti9, 24, 5, 2); // beach 24-33
+            GetTile(18).ConnectSouth(GetTile(13));
+            GetTile(32).ConnectNorth(GetTile(7));
+            GetTile(33).ConnectNorth(GetTile(8));
+            AddTile(10, ti2) // gate
+                .ConnectWest(GetTile(6)).ConnectEast(GetTile(11));
+            AddTile(14, ti4) // town
+                .ConnectWest(GetTile(13)).ConnectEast(GetTile(19));
+            AddTile(21, ti6) // market
+                .ConnectNorth(GetTile(13));
+            AddTile(22, ti7) // nice house
+                .ConnectNorth(GetTile(11));
+            AddTile(23, ti8) // craft house
+                .ConnectWest(GetTile(17));
+            AddTile(34, ti10) // mine entrance
+                .ConnectSouth(GetTile(24));
+
         }
     }
 }

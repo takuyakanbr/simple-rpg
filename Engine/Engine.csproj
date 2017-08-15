@@ -43,6 +43,7 @@
     <Compile Include="Data\ItemConsumable.cs" />
     <Compile Include="Data\ItemEquipment.cs" />
     <Compile Include="Data\Quest.cs" />
+    <Compile Include="Data\PlayerSkill.cs" />
     <Compile Include="Data\Tile.cs" />
     <Compile Include="Data\Vendor.cs" />
     <Compile Include="Data\World.cs" />

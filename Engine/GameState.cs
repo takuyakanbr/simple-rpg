@@ -62,7 +62,7 @@ namespace Engine
                 RaiseMessage("You defeated the " + CurrentMonster.Name);
 
                 // Give player experience points for killing the monster
-                Player.AddExperiencePoints(CurrentMonster.RewardXP);
+                Player.AddExperience(CurrentMonster.RewardXP);
                 RaiseMessage("You receive " + CurrentMonster.RewardXP + " experience points");
 
                 // Give player gold for killing the monster
@@ -157,6 +157,7 @@ namespace Engine
         {
             CurrentVendor = null;
             CurrentEntity = null;
+            Player.CurrentHitPoints += 1;
 
             // Update entities
             EntitiesOnTile.Clear();
@@ -176,12 +177,13 @@ namespace Engine
                     _monsterHitPoints = CurrentMonster.HitPoints;
                     RaiseMessage("You see a " + CurrentMonster.Name);
                     newMonster = true;
+                    if (monsterSpawn.HasInitiative)
+                        DoMonsterMove();
                     break;
                 }
             }
             if (!newMonster) CurrentMonster = null;
 
-            Player.CurrentHitPoints += 1;
             Player.CurrentTile = tile;
         }
 
@@ -239,6 +241,16 @@ namespace Engine
         {
             OnDialogEvent?.Invoke(this, 
                 new DialogEventArgs(DialogEventType.Update, CurrentEntity.Name + ": " + text, options));
+        }
+
+        public void TakeDamage(int damage)
+        {
+            Player.CurrentHitPoints -= damage;
+            if (Player.CurrentHitPoints <= 0)
+            {
+                RaiseMessage("You died.");
+                MoveHome();
+            }
         }
 
         // consume the specified consumable - this lets the monster take a turn
