@@ -85,12 +85,12 @@ namespace Engine
 
         public void AddExperience(SkillType type, int points)
         {
-            Skills.ElementAt((int)type).AddExperience(points);
+            Skills[(int)type].AddExperience(points);
         }
 
-        public void AddExperience(int points)
+        public void AddCombatExperience(int points)
         {
-            Skills.ElementAt((int)SkillType.Combat).AddExperience(points);
+            Skills[(int)SkillType.Combat].AddExperience(points);
         }
         
         public void AddItemToInventory(Item item, int quantity = 1)
@@ -138,7 +138,7 @@ namespace Engine
                 {
                     AddItemToInventory(item.Data, item.Quantity);
                 }
-                AddExperience(playerQuest.Data.RewardXP);
+                AddCombatExperience(playerQuest.Data.RewardXP);
                 Gold += playerQuest.Data.RewardGold;
                 playerQuest.IsComplete = true;
             }
@@ -167,7 +167,7 @@ namespace Engine
 
         public int GetLevel(SkillType type = SkillType.Combat)
         {
-            return Skills.ElementAt((int)type).Level;
+            return Skills[(int)type].Level;
         }
 
         // gets the state of the specified quest;
@@ -379,7 +379,7 @@ namespace Engine
                 idAttribute.Value = item.ID.ToString();
                 itemEquipment.Attributes.Append(idAttribute);
 
-                inventoryItems.AppendChild(itemEquipment);
+                itemEquipments.AppendChild(itemEquipment);
             }
 
             return saveData.InnerXml;

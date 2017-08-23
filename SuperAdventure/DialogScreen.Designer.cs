@@ -88,7 +88,7 @@
             this.btnOption4.UseVisualStyleBackColor = true;
             this.btnOption4.Click += new System.EventHandler(this.btnOption4_Click);
             // 
-            // Interaction
+            // DialogScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -100,7 +100,8 @@
             this.Controls.Add(this.rtbDialog);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "Interaction";
+            this.Name = "DialogScreen";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Interaction";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Interaction_FormClosing);
             this.ResumeLayout(false);

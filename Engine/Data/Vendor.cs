@@ -15,12 +15,23 @@ namespace Engine.Data
         {
             ID = id;
             Name = name;
+            Inventory = new BindingList<InventoryItem>();
         }
         
         // add item without checking for merges
         public Vendor AddItem(int itemID, int quantity = 1)
         {
             Inventory.Add(new InventoryItem(World.GetItem(itemID), quantity));
+            return this;
+        }
+
+        // add all items in list without checking for merges
+        public Vendor AddItems(int[] itemIDs, int quantity = 1)
+        {
+            foreach (int id in itemIDs)
+            {
+                Inventory.Add(new InventoryItem(World.GetItem(id), quantity));
+            }
             return this;
         }
 

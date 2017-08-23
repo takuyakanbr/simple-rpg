@@ -36,15 +36,15 @@ namespace Engine.Data
             LootTable = new List<LootItem>();
         }
 
-        public Monster AddLoot(Item item, int minQuantity, int maxQuantity, double dropChance)
+        public Monster AddLoot(int itemID, int minQuantity, int maxQuantity, double dropChance)
         {
-            LootTable.Add(new LootItem(item, minQuantity, maxQuantity, dropChance));
+            LootTable.Add(new LootItem(World.GetItem(itemID), minQuantity, maxQuantity, dropChance));
             return this;
         }
 
-        public Monster AddLoot(LootItem lootItem)
+        public Monster AddLoot(Item item, int minQuantity, int maxQuantity, double dropChance)
         {
-            LootTable.Add(lootItem);
+            LootTable.Add(new LootItem(item, minQuantity, maxQuantity, dropChance));
             return this;
         }
     }

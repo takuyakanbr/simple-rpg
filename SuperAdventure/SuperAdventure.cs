@@ -40,6 +40,7 @@ namespace SuperAdventure
             dgvSkills.Columns.Add(new DataGridViewTextBoxColumn
             {
                 DataPropertyName = "ID",
+                Width = 1,
                 Visible = false
             });
             dgvSkills.Columns.Add(new DataGridViewTextBoxColumn
@@ -68,6 +69,7 @@ namespace SuperAdventure
             dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
             {
                 DataPropertyName = "ID",
+                Width = 1,
                 Visible = false
             });
             dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
@@ -91,6 +93,7 @@ namespace SuperAdventure
             dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
             {
                 DataPropertyName = "ID",
+                Width = 1,
                 Visible = false
             });
             dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
@@ -118,18 +121,19 @@ namespace SuperAdventure
 
             _player.PropertyChanged += PlayerOnPropertyChanged;
             _state.PropertyChanged += GameStateOnPropertyChanged;
-            _state.OnMessage += DisplayMessage;
-            _state.OnDialogEvent += UpdateDialog;
+            _state.OnMessage += HandleMessageEvent;
+            _state.OnDialogEvent += HandleDialogEvent;
+            _state.OnUIEvent += HandleUIEvent;
 
             _player.RecalculateStats();
             _state.MoveTo(_player.CurrentTile);
         }
 
-        private void DisplayMessage(object sender, MessageEventArgs messageEventArgs)
+        private void HandleMessageEvent(object sender, MessageEventArgs e)
         {
-            rtbMessages.Text += messageEventArgs.Message + Environment.NewLine;
+            rtbMessages.Text += e.Message + Environment.NewLine;
 
-            if (messageEventArgs.AddExtraNewLine)
+            if (e.AddExtraNewLine)
             {
                 rtbMessages.Text += Environment.NewLine;
             }
@@ -138,24 +142,34 @@ namespace SuperAdventure
             rtbMessages.ScrollToCaret();
         }
 
-        private void UpdateDialog(object sender, DialogEventArgs eventArgs)
+        private void HandleDialogEvent(object sender, DialogEventArgs e)
         {
-            switch (eventArgs.Type)
+            switch (e.Type)
             {
                 case DialogEventType.Update:
                     if (DialogScreen == null)
                     {
                         DialogScreen = new DialogScreen(this, _state);
-                        DialogScreen.StartPosition = FormStartPosition.CenterParent;
 
                         // show dialog in a non-blocking way
                         BeginInvoke(new Action(() => DialogScreen.ShowDialog(this)));
                     }
-                    DialogScreen.UpdateDialog(eventArgs.Dialog, eventArgs.Options);
+                    DialogScreen.UpdateDialog(e.Dialog, e.Options);
                     break;
                 case DialogEventType.Close:
                     DialogScreen.Close();
                     DialogScreen = null;
+                    break;
+            }
+        }
+
+        private void HandleUIEvent(object sender, UIEventArgs e)
+        {
+            switch (e.Type)
+            {
+                case UIEventType.ShowVendor:
+                    TradingScreen screen = new TradingScreen(_state);
+                    screen.ShowDialog(this);
                     break;
             }
         }

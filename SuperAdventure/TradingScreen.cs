@@ -144,10 +144,10 @@ namespace SuperAdventure
                 int itemID = Convert.ToInt32(dgvVendorItems.Rows[e.RowIndex].Cells[0].Value);
                 Item itemBeingBought = World.GetItem(itemID);
                 
-                if (_player.Gold >= itemBeingBought.Price)
+                if (_player.Gold >= itemBeingBought.BuyPrice)
                 {
                     _player.AddItemToInventory(itemBeingBought);
-                    _player.Gold -= itemBeingBought.Price;
+                    _player.Gold -= itemBeingBought.BuyPrice;
                     _vendor.RemoveItemFromInventory(itemID);
                 }
                 else

@@ -37,6 +37,7 @@ namespace Engine
 
         public event EventHandler<MessageEventArgs> OnMessage;
         public event EventHandler<DialogEventArgs> OnDialogEvent;
+        public event EventHandler<UIEventArgs> OnUIEvent;
 
         public GameState()
         {
@@ -62,7 +63,7 @@ namespace Engine
                 RaiseMessage("You defeated the " + CurrentMonster.Name);
 
                 // Give player experience points for killing the monster
-                Player.AddExperience(CurrentMonster.RewardXP);
+                Player.AddCombatExperience(CurrentMonster.RewardXP);
                 RaiseMessage("You receive " + CurrentMonster.RewardXP + " experience points");
 
                 // Give player gold for killing the monster
@@ -114,14 +115,7 @@ namespace Engine
             damage -= Player.Defence;
             if (damage < 0) damage = 0;
 
-            Player.CurrentHitPoints -= damage;
-            RaiseMessage("The " + CurrentMonster.Name + " did " + damage + " points of damage.");
-
-            if (Player.CurrentHitPoints <= 0)
-            {
-                RaiseMessage("The " + CurrentMonster.Name + " killed you.");
-                MoveHome();
-            }
+            TakeDamage(damage, CurrentMonster.Name);
         }
 
         // closes the dialog screen and end interaction
@@ -243,12 +237,24 @@ namespace Engine
                 new DialogEventArgs(DialogEventType.Update, CurrentEntity.Name + ": " + text, options));
         }
 
-        public void TakeDamage(int damage)
+        public void ShowVendor(int vendorID)
+        {
+            CurrentVendor = World.GetVendor(vendorID);
+            OnUIEvent?.Invoke(this, new UIEventArgs(UIEventType.ShowVendor, vendorID));
+        }
+
+        public void TakeDamage(int damage, string source = null)
         {
             Player.CurrentHitPoints -= damage;
+            if (source != null)
+                RaiseMessage("The " + source + " did " + damage + " points of damage.");
+
             if (Player.CurrentHitPoints <= 0)
             {
-                RaiseMessage("You died.");
+                if (source != null)
+                    RaiseMessage("The " + source + " killed you.");
+                else
+                    RaiseMessage("You died.");
                 MoveHome();
             }
         }

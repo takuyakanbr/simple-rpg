@@ -26,40 +26,44 @@ namespace Engine.Data
             Data = data;
         }
 
-        public Tile Connect(Tile northTile, Tile eastTile = null, Tile southTile = null, Tile westTile = null)
+        public Tile Connect(int northID, int eastID = -1, int southID = -1, int westID = -1)
         {
-            if (northTile != null) ConnectNorth(northTile);
-            if (eastTile != null) ConnectEast(eastTile);
-            if (southTile != null) ConnectSouth(southTile);
-            if (westTile != null) ConnectWest(westTile);
+            if (northID != -1) ConnectNorth(northID);
+            if (eastID != -1) ConnectEast(eastID);
+            if (southID != -1) ConnectSouth(southID);
+            if (westID != -1) ConnectWest(westID);
             return this;
         }
 
-        public Tile ConnectNorth(Tile northTile)
+        public Tile ConnectNorth(int tileID)
         {
-            North = northTile;
-            northTile.South = this;
+            Tile t = World.GetTile(tileID);
+            North = t;
+            t.South = this;
             return this;
         }
 
-        public Tile ConnectEast(Tile eastTile)
+        public Tile ConnectEast(int tileID)
         {
-            East = eastTile;
-            eastTile.West = this;
+            Tile t = World.GetTile(tileID);
+            East = t;
+            t.West = this;
             return this;
         }
 
-        public Tile ConnectSouth(Tile southTile)
+        public Tile ConnectSouth(int tileID)
         {
-            South = southTile;
-            southTile.North = this;
+            Tile t = World.GetTile(tileID);
+            South = t;
+            t.North = this;
             return this;
         }
 
-        public Tile ConnectWest(Tile westTile)
+        public Tile ConnectWest(int tileID)
         {
-            West = westTile;
-            westTile.East = this;
+            Tile t = World.GetTile(tileID);
+            West = t;
+            t.East = this;
             return this;
         }
     }

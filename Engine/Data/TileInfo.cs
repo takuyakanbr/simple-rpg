@@ -7,7 +7,6 @@ namespace Engine.Data
     // contains data about a tile
     public class TileInfo
     {
-        public int ID;
         public string Name;
         public string GeoName;
         public string Description;
@@ -18,9 +17,8 @@ namespace Engine.Data
         // player will not be allowed into this tile if this returns false
         public Func<GameState, Player, bool> OnEnter;
         
-        public TileInfo(int id, string name, string geoName, string description)
+        public TileInfo(string name, string geoName, string description)
         {
-            ID = id;
             Name = name;
             GeoName = geoName;
             Description = description;
@@ -38,6 +36,15 @@ namespace Engine.Data
         {
             MonsterSpawns.Add(new MonsterSpawn(World.GetMonster(monsterID), spawnChance, canAvoid, initiative));
             return this;
+        }
+
+        public TileInfo Clone()
+        {
+            TileInfo ti = new TileInfo(Name, GeoName, Description);
+            ti.Entities.AddRange(Entities);
+            ti.MonsterSpawns.AddRange(MonsterSpawns);
+            ti.OnEnter = OnEnter;
+            return ti;
         }
     }
 }
