@@ -104,6 +104,23 @@ namespace Engine
             InteractState = 0;
             InteractCounter = 0;
             Interact(0);
+            if (entity is GatheringNode)
+            {
+                BeginGathering((GatheringNode)entity);
+            }
+        }
+
+        // handles new interactions with GatheringNodes, called by BeginInteraction
+        private void BeginGathering(GatheringNode node)
+        {
+            if (Player.GetLevel(node.Skill) < node.Level)
+            {
+                // does not meet level requirement
+                RaiseMessage("You need a " + PlayerSkill.SKILL_NAMES[(int)node.Skill] + " level of " + node.Level + ".");
+            }
+
+            // show gathering UI
+            OnUIEvent?.Invoke(this, new UIEventArgs(UIEventType.ShowGathering, node.ID));
         }
 
         // (internal) make the monster take a turn
@@ -130,7 +147,7 @@ namespace Engine
         {
             if (CurrentEntity == null) return;
             InteractChoice = option;
-            CurrentEntity.OnInteract(this, Player);
+            CurrentEntity.OnInteract?.Invoke(this, Player);
             InteractCounter++;
         }
 
@@ -236,7 +253,7 @@ namespace Engine
             OnDialogEvent?.Invoke(this, 
                 new DialogEventArgs(DialogEventType.Update, CurrentEntity.Name + ": " + text, options));
         }
-
+        
         public void ShowVendor(int vendorID)
         {
             CurrentVendor = World.GetVendor(vendorID);

@@ -4,11 +4,12 @@ using System.Linq;
 
 namespace Engine.Data
 {
-    public enum EquipmentType { MainHand, Offhand, Head, Body, Legs, Hands, Feet }
+    public enum EquipmentType { MainHand, Offhand, Head, Body, Legs, Hands, Feet, Rod, Pickaxe, Axe }
 
     public class ItemEquipment : Item
     {
-        private static string[] TypeNames = { "Main-hand", "Off-hand", "Head", "Body", "Legs", "Hands", "Feet" };
+        private static string[] TypeNames = { "Main-hand", "Off-hand", "Head", "Body", "Legs", "Hands", "Feet",
+            "Rod", "Pickaxe", "Axe" };
 
         public EquipmentType Type;
         public int LevelRequirement { get; private set; }

@@ -255,6 +255,7 @@ namespace Engine.Data
             Add(new Entity(6, "Businessman", "Reeks of arrogance."));
             Add(new Entity(7, "Servant", "Servant."));
             Add(new Entity(8, "Fisherman", "He spends the whole day fishing."));
+            Add(new GatheringNode(10, "Fishing spot", "You can catch fishes here.", SkillType.Fishing, 1, 4, 25, EquipmentType.Rod).AddLoot(0, 1, 1, 0.25));
         }
 
         private static void PopulateTiles()
@@ -272,7 +273,7 @@ namespace Engine.Data
             var gate = new TileInfo("Gate", knoxville, "A guard waves at you, 'Welcome to Knoxville, traveller.'");
             var town1 = new TileInfo("Town", knoxville, "A peaceful, small town. There's 2 gates, to the north, and to the west. A small dock sits at the shore to the east.");
             var town2 = town1.Clone();
-            var docks = new TileInfo("Docks", knoxville, "A nice place to fish, and to catch the sunrise.").AddEntity(8);
+            var docks = new TileInfo("Docks", knoxville, "A nice place to fish, and to catch the sunrise.").AddEntity(8).AddEntity(10);
             var market = new TileInfo("Market", knoxville, "Fresh produce, and lots of fish.").AddEntity(4);
             var house1 = new TileInfo("House", knoxville, "A nice, spacious home. In fact, as far as you can see, it's the nicest one in this town.").AddEntity(6).AddEntity(7);
             var house2 = new TileInfo("House", knoxville, "A small place, with tools used by craftsmen.").AddEntity(5);

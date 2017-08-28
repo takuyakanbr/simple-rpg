@@ -26,6 +26,7 @@ namespace Engine
         /// <returns></returns>
         public static int Next(int minValue, int maxValue)
         {
+            if (minValue == maxValue) return minValue;
             byte[] bytes = new byte[4];
             _generator.GetBytes(bytes);
             double dbl = (double)BitConverter.ToUInt32(bytes, 0) / ((double)UInt32.MaxValue + 1);

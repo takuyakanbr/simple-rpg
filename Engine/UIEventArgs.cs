@@ -2,7 +2,7 @@
 
 namespace Engine
 {
-    public enum UIEventType { ShowVendor };
+    public enum UIEventType { ShowVendor, ShowGathering };
 
     public class UIEventArgs : EventArgs
     {

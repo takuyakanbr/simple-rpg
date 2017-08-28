@@ -168,9 +168,17 @@ namespace SuperAdventure
             switch (e.Type)
             {
                 case UIEventType.ShowVendor:
-                    TradingScreen screen = new TradingScreen(_state);
-                    screen.ShowDialog(this);
-                    break;
+                    {
+                        TradingScreen screen = new TradingScreen(_state);
+                        screen.ShowDialog(this);
+                        break;
+                    }
+                case UIEventType.ShowGathering:
+                    {
+                        GatheringScreen screen = new GatheringScreen(_state);
+                        screen.ShowDialog(this);
+                        break;
+                    }
             }
         }
 

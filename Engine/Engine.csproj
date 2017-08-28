@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\GatheringNode.cs" />
     <Compile Include="Data\ItemConsumable.cs" />
     <Compile Include="Data\ItemEquipment.cs" />
     <Compile Include="Data\Quest.cs" />
